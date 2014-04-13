@@ -11,7 +11,7 @@ class StoreController < ApplicationController
     session_vars = [:category, :sub_category, :sub_category_group, :customer_shopping_list_name, :customer_email]
     session_vars.each do |session_var|
       if session[session_var].nil?
-        session[session_var] = nil?
+        session[session_var] = ""
       end
     end
     
@@ -22,12 +22,12 @@ class StoreController < ApplicationController
     if not params[:set_customer].nil?
       # Changed current customer
       # Set to new customer and reset previous category, sub_category, and sub_category_group
-      session[:category] = nil
-      session[:sub_category] = nil
-      session[:sub_category_group] = nil
-      session[:customer_shopping_list_name] = nil
+      session[:category] = ""
+      session[:sub_category] = ""
+      session[:sub_category_group] = ""
+      session[:customer_shopping_list_name] = ""
       if params[:set_customer].blank?
-        session[:customer_email] = nil
+        session[:customer_email] = ""
       else
         session[:customer_email] = params[:set_customer]
         # Handle case where we just switched customers and they have a single shopping list
@@ -144,25 +144,25 @@ class StoreController < ApplicationController
     # ************************************************************
     # Check for a change in category, sub_category, and sub_category_group. We'll only get one.
     # Pull products for new situation
-    if not params[:category].nil?
+    if not params[:category].blank?
       session[:category] = params[:category]
-      session[:sub_category] = nil
-      session[:sub_category_group] = nil
+      session[:sub_category] = ""
+      session[:sub_category_group] = ""
       @products = nil
-    elsif not params[:sub_category].nil?
+    elsif not params[:sub_category].blank?
       session[:sub_category] = params[:sub_category]
-      session[:sub_category_group] = nil
+      session[:sub_category_group] = ""
       @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
-    elsif not params[:sub_category_group].nil?
+    elsif not params[:sub_category_group].blank?
       session[:sub_category_group] = params[:sub_category_group]
       @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
 
     else
       # No changes in category, sub_category, and sub_category_group
       # Figure out what we displayed last using session category, sub_category, and sub_category_group
-      if not session[:sub_category_group].nil?
+      if not session[:sub_category_group].blank?
         @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
-      elsif not session[:sub_category].nil?
+      elsif not session[:sub_category].blank?
         @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
       else
         @products = nil
