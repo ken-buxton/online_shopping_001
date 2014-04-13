@@ -174,6 +174,7 @@ class StoreController < ApplicationController
     # sub_category, and sub_category_group list
     # ************************************************************
     # Determine what we'll display in the left hand margin
+    logger.debug "session[:category] = #{session[:category]}"
     conn = ActiveRecord::Base.connection
     @categories = conn.select_values("select distinct category from products")
     @sub_categories = conn.select_values("select distinct sub_category from products where category #{equal_or_is_null(session[:category])}")
