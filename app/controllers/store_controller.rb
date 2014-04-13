@@ -176,8 +176,8 @@ class StoreController < ApplicationController
     # Determine what we'll display in the left hand margin
     conn = ActiveRecord::Base.connection
     @categories = conn.select_values("select distinct category from products")
-    @sub_categories = conn.select_values("select distinct sub_category from products where category = '#{session[:category]}'")
-    @sub_category_groups = conn.select_values("select distinct sub_category_group from products where category = '#{session[:category]}' and sub_category = '#{session[:sub_category]}'")
+    @sub_categories = conn.select_values("select distinct sub_category from products where category #{equal_or_is_null(session[:category])}")
+    @sub_category_groups = conn.select_values("select distinct sub_category_group from products where category #{equal_or_is_null(session[:category])} and sub_category #{equal_or_is_null(session[:sub_category])}")
     @cur_category = session[:category]
     @cur_sub_category = session[:sub_category]
     
@@ -235,6 +235,15 @@ class StoreController < ApplicationController
       return [customer_id, customer_shopping_list]
     end
     return [customer_id, nil]
+  end
+  
+  def equal_or_is_null(val)
+    if val.nil?
+      return "IS NULL"
+    else
+      return "= '#{val.to_s}'"
+    end
+    
   end
 
 end
