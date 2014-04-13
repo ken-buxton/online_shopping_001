@@ -1,6 +1,20 @@
 class StoreController < ApplicationController
   
   def index
+    # Parameter variables: :set_customer, :set_customer_shopping_list, :add_to_list, :delete_from_list, :commit, :shopping_list_name,
+    #   :category, :sub_category, :sub_category_group
+    #   :set_change_qty_x (where x is a multi-digit number)
+    # 
+    # Session variables: :category, :sub_category, :sub_category_group, :customer_shopping_list_name, :customer_email
+    # 
+    # Make sure all session variables have a value (nil if don't exist)
+    session_vars = [:category, :sub_category, :sub_category_group, :customer_shopping_list_name, :customer_email]
+    session_vars.each do |session_var|
+      if session[session_var].nil?
+        session[session_var] = nil?
+      end
+    end
+    
     # ************************************************************
     # Handle changes to the current customer or 
     # current customer's shopping list.
