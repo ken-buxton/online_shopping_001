@@ -68,7 +68,7 @@
 						
 						<td class="right_justify"><%= number_to_currency(item['price'].to_f * item['quantity'].to_f) %></td>
 						<td><%= item['note'] %></td>
-						<!-- <td><%= link_to "Delete", controller: "store", delete_from_list: item['id'] %></td> -->
+						<td><%= link_to "Delete", controller: "store", delete_from_list: item['id'] %></td>
 					</tr>
 				<% end %>
 				
