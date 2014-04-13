@@ -186,7 +186,7 @@ class StoreController < ApplicationController
     # Setup the customer list
     @customers = Customer.select(:email).order(:email)
     @customer_email = ""
-    if not session[:customer_email].nil? and not session[:customer_email]
+    if not session[:customer_email].nil? and session[:customer_email]
       @customer_email = session[:customer_email]
       customer_id = Customer.where(email: session[:customer_email]).first.id
     end
