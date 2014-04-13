@@ -1,0 +1,116 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or vendor/assets/stylesheets of plugins, if any, can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the top of the
+ * compiled file, but it's generally better to create a new file per style scope.
+ *
+ *= require_self
+ * 123= require_tree .
+ */
+
+.customer {
+  float: right;
+  margin: -0.25em 0.1em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.customer_shopping_list {
+  //float: left;
+  margin: -0.25em 0.1em;
+}
+
+.top_line {
+  background: #9c9;
+  //background: yellow;
+}
+
+.list_line_odd {
+  background: #cfc;
+}
+
+.list_line_even {
+  background: #afa;
+}
+
+.right_justify {
+  text-align: right;
+}
+
+.list_image {
+  width:  100px;
+  height: 63px;
+}
+
+#banner {
+  background: #9c9;
+  //background: yellow;
+  padding: 10px;
+  border-bottom: 2px solid;
+  font: small-caps 40px/40px "Times new Roman", serif;
+  color: #282;
+  text-align: center;
+  
+  img {
+    float: left;
+  }
+}
+
+#notice {
+  color: #000 !important;
+  border: 2px solid red;
+  padding: 1em;
+  margin-bottom: 2em;
+  background-color: #f0f0f0;
+  font: bold smaller sans-serif;
+}
+
+#columns {
+  background: #141;
+      
+  #lside {
+    ul {
+      padding: 0;
+      li {
+        list-style: none;
+        a, p {
+          color: #bfb;
+          font-size: medium;
+        }
+      }
+    }
+    
+    p {
+      color: #bfb;
+    }
+
+  }
+
+  #main {
+    background: white;
+    padding: 1em;
+  }
+  
+  #rside {
+    ul {
+      padding: 0;
+      li {
+        list-style: none;
+        a, p {
+          color: #bfb;
+          font-size: medium;
+        }
+      }
+    }
+    
+    p {
+      color: #bfb;
+    }
+  }
+}

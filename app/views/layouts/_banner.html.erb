@@ -1,0 +1,13 @@
+	<div id="banner">
+		<%= form_tag store_path, class: 'customer' do %>
+			<%= select_tag 'set_customer', 
+				options_for_select(@customers, @customer_email),
+				onchange: 'this.form.submit()',
+				include_blank: true
+			%>
+			<%= submit_tag 'submit' %>
+			<%= javascript_tag "$('.customer input').hide()" %>
+		<% end %>
+		<%= image_tag("logo3.jpg") %>
+		<%= @page_title || 'Borchardt Brothers Online Store' %>
+	</div>

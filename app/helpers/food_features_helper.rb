@@ -1,0 +1,2 @@
+module FoodFeaturesHelper
+end

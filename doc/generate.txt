@@ -1,0 +1,16 @@
+rails generate model Customer email:string password_digest:string account_no:string \
+preferred_store_id:integer first_name:string last_name:string nick_name:string \
+home_phone:string cell_phone:string address1:string address2:string city:string \
+state_id:integer zip:string
+
+rails generate active_admin:resource Customer
+
+rails generate controller store index
+
+rails generate model CustomerShoppingList customer_id:integer shopping_list_name:string
+
+rails generate model CustomerShoppingListItem customer_shopping_list_id:integer \
+	product_id:integer quantity:decimal note:text
+
+rails generate active_admin:resource CustomerShoppingList
+rails generate active_admin:resource CustomerShoppingListItem

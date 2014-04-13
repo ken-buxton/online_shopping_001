@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sku: MyString
+  upc: MyString
+  brand: MyString
+  descr: MyString
+  qty_desc: MyString
+  min_qty_weight: 9.99
+  image: MyString
+  category: MyString
+  sub_category: MyString
+  sub_category_group: MyString
+  uofm: MyString
+  price: 9.99
+  sale_price: 9.99
+  on_sale: false
+
+two:
+  sku: MyString
+  upc: MyString
+  brand: MyString
+  descr: MyString
+  qty_desc: MyString
+  min_qty_weight: 9.99
+  image: MyString
+  category: MyString
+  sub_category: MyString
+  sub_category_group: MyString
+  uofm: MyString
+  price: 9.99
+  sale_price: 9.99
+  on_sale: false

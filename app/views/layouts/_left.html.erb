@@ -1,0 +1,26 @@
+	<td style="width: 10%">
+	<div id="lside">
+	
+	<ul>
+		<% @categories.each do |category| %>
+			<li><%= link_to category, controller: "store", category: category %></li>
+			<% if category == @cur_category %>
+				<% @sub_categories.each do |sub_category| %>
+					<li>&nbsp;&nbsp;&nbsp;<%= link_to sub_category, controller: "store", sub_category: sub_category %></li>
+					<% if sub_category == @cur_sub_category %>
+						<% if @sub_category_groups.size > 1 %>
+							<% @sub_category_groups.each do |sub_category_group| %>
+								<% if sub_category_group.size > 0 %>
+									<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to sub_category_group, controller: "store", sub_category_group: sub_category_group %></li>
+								<% else %>
+									<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to sub_category, controller: "store", sub_category_group: "" %></li>
+								<% end %>
+							<% end %>
+						<% end %>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+	</ul>
+	</div>
+	</td>
