@@ -1,7 +1,7 @@
 class StoreController < ApplicationController
   
   def index
-    # Parameter variables: :set_customer, :set_customer_shopping_list, :add_to_list, :delete_from_list, :commit, :shopping_list_name,
+    # Parameter variables: :set_customer_email, :set_customer_shopping_list, :add_to_list, :delete_from_list, :commit, :shopping_list_name,
     #   :category, :sub_category, :sub_category_group
     #   :set_change_qty_x (where x is a multi-digit number)
     # 
@@ -19,17 +19,17 @@ class StoreController < ApplicationController
     # Handle changes to the current customer or 
     # current customer's shopping list.
     # ************************************************************
-    if not params[:set_customer].nil?
+    if not params[:set_customer_email].nil?
       # Changed current customer
       # Set to new customer and reset previous category, sub_category, and sub_category_group
       session[:category] = ""
       session[:sub_category] = ""
       session[:sub_category_group] = ""
       session[:customer_shopping_list_name] = ""
-      if params[:set_customer].blank?
+      if params[:set_customer_email].blank?
         session[:customer_email] = ""
       else
-        session[:customer_email] = params[:set_customer]
+        session[:customer_email] = params[:set_customer_email]
         # Handle case where we just switched customers and they have a single shopping list
         customer_id, customer_shopping_list = get_first_customer_shopping_info
         if not customer_shopping_list.nil?
@@ -186,7 +186,7 @@ class StoreController < ApplicationController
     # Setup the customer list
     @customers = Customer.select(:email).order(:email)
     @customer_email = ""
-    if not session[:customer_email].nil? and session[:customer_email]
+    if not session[:customer_email].blank?
       @customer_email = session[:customer_email]
       customer_id = Customer.where(email: session[:customer_email]).first.id
     end

@@ -18,7 +18,7 @@ ActiveAdmin.setup do |config|
   # Note: Aim for an image that's 21px high so it fits in the header.
   #
   #config.site_title_image = "logo.png"
-  config.site_title_image = "logo3.jpg"
+  config.site_title_image = "Emotes-face-smile-iconx32.png"
 
   # == Default Namespace
   #
