@@ -1,5 +1,5 @@
 class Product < ActiveRecord::Base
-  has_many :customer_shopping_lists
+  has_many :customer_shopping_list_items, dependent: :destroy
   
   def to_s; 
     if brand.size > 0

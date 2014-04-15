@@ -29,7 +29,12 @@
 		
 
 		<fieldset style="border: solid; color: #bfb; padding: 1em;">
-			<legend style="font-size: medium;">Your Shopping Items</legend>
+			<legend style="font-size: medium;">
+				<%= "Your Shopping Items" %>
+				<% if not @cur_shopping_list.blank? %>
+					<%= " (" + @cur_shopping_list + ")" %>
+				<% end %>
+			</legend>
 		<!-- <ul><li><p>Your Shopping Items:</p></li></ul> -->
 		<% if not @customer_shopping_list_items.nil? %>
 			<table style="color: #333333;">
