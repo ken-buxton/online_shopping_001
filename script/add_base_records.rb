@@ -124,11 +124,11 @@ Customer.reset_pk_sequence
 Customer.create(email: "ken@gmail.com", password_digest: "12345", account_no: "12345678", preferred_store_id: preferred_store_id_bl, 
   first_name: "Ken", last_name: "Buxton", nick_name: "Ken", home_phone: "", cell_phone: "517-902-1572", 
   address1: "513 E. Logan", address2: "", city: "Tecumseh", state_id: state_id_mi, zip: "49286")
-Customer.create(email: "bo.diddley@gmail.com", password_digest: "12345", account_no: "32453789", preferred_store_id: preferred_store_id_na, 
-  first_name: "Bosworth", last_name: "Diddley", nick_name: "Bo", home_phone: "888-919-5555", cell_phone: "", 
+Customer.create(email: "betty@hotmail.com", password_digest: "12345", account_no: "32453789", preferred_store_id: preferred_store_id_na, 
+  first_name: "Elizabeth", last_name: "Smith", nick_name: "Betty", home_phone: "888-919-5555", cell_phone: "", 
   address1: "27 Main", address2: "", city: "Brooklyn", state_id: state_id_mi, zip: "49230")
 Customer.create(email: "john.doe@gmail.com", password_digest: "12345", account_no: "93701635", preferred_store_id: preferred_store_id_mo, 
-  first_name: "John", last_name: "Doe", nick_name: "John", home_phone: "234-583-5555", cell_phone: "", 
+  first_name: "Johnathon", last_name: "Doe", nick_name: "John", home_phone: "234-583-5555", cell_phone: "", 
   address1: "143 Oak", address2: "", city: "Morenci", state_id: state_id_mi, zip: "49256")
 
 # *********************************************************************

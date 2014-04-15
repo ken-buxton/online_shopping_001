@@ -77,8 +77,16 @@ class StoreController < ApplicationController
       if params[:commit] == "Rename Current List"
         customer_id, customer_shopping_list = get_named_customer_shopping_info
         if not customer_id.nil? and not customer_shopping_list.nil?
-          customer_shopping_list.shopping_list_name = params[:shopping_list_name]
-          customer_shopping_list.save
+          if session[:customer_shopping_list_name] == params[:shopping_list_name]
+            redirect_to store_path, notice: "No change in shopping list name."
+            #flash[:notice] = "No change in shopping list name."
+          else
+            customer_shopping_list.shopping_list_name = params[:shopping_list_name]
+            customer_shopping_list.save
+          end
+        else
+          redirect_to store_path, notice: "Nothing to rename."
+          #flash[:notice] = "Nothing to rename."
         end
         session[:customer_shopping_list_name] = params[:shopping_list_name]
         
@@ -87,9 +95,14 @@ class StoreController < ApplicationController
           session[:customer_shopping_list_name] = params[:shopping_list_name]
           customer_id, customer_shopping_list = get_named_customer_shopping_info
           if not customer_id.nil? and not customer_shopping_list.nil?
+            redirect_to store_path, notice: "Shopping list '#{session[:customer_shopping_list_name]}' already exists."
+            #flash[:notice] = "Shopping list '#{session[:customer_shopping_list_name]}' already exists."
           else
             CustomerShoppingList.create(customer_id: customer_id, shopping_list_name: session[:customer_shopping_list_name])
           end
+        else
+          redirect_to store_path, notice: "No name given for new shopping list."
+          #flash[:notice] = "No name given for new shopping list."
         end
         
       elsif params[:commit] == "Delete Current List"
@@ -101,40 +114,33 @@ class StoreController < ApplicationController
           if not customer_shopping_list.nil?
             session[:customer_shopping_list_name] = customer_shopping_list.shopping_list_name
           end
+        else
+          redirect_to store_path, notice: "Nothing to delete."
+          #flash[:notice] = "Nothing to delete."
         end
         
       elsif params[:commit] == "Change"
-        logger.debug params
+        # logger.debug params
         params.each do |key, new_value|
           if key =~ /^set_change_qty_/
             product_id = key["set_change_qty_".size..-1].to_i
-            logger.debug "set_change_qty_ search: #{key} = #{new_value}, p_id=#{product_id}"
+            # logger.debug "set_change_qty_ search: #{key} = #{new_value}, p_id=#{product_id}"
             
             customer_id, customer_shopping_list = get_named_customer_shopping_info
-            logger.debug "customer_id #{customer_id}, customer_shopping_list #{customer_shopping_list}"
+            # logger.debug "customer_id #{customer_id}, customer_shopping_list #{customer_shopping_list}"
             if not customer_id.nil? and not customer_shopping_list.nil?
-              logger.debug "customer_id and customer_shopping_list not nil"
+              # logger.debug "customer_id and customer_shopping_list not nil"
               # If item already exists, add a count of 1 to current count
               if CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).count > 0
-                logger.debug "Got the CustomerShoppingListItem"
+                # logger.debug "Got the CustomerShoppingListItem"
                 item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
                 item.quantity = new_value
                 item.save
-                logger.debug "item: #{item.to_s}"
+                # logger.debug "item: #{item.to_s}"
               end
             end            
           end
         end
-        # logger.debug session.to_hash.to_s
-        # session[:customer_shopping_list_name] = params[:shopping_list_name]
-        # customer_id, customer_shopping_list = get_named_customer_shopping_info
-        # if not customer_id.nil? and not customer_shopping_list.nil?
-          # customer_shopping_list.destroy
-          # customer_id, customer_shopping_list = get_first_customer_shopping_info
-          # if not customer_shopping_list.nil?
-            # session[:customer_shopping_list_name] = customer_shopping_list.shopping_list_name
-          # end
-        # end
       end
 
     end
