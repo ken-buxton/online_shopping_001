@@ -81,14 +81,18 @@ class StoreController < ApplicationController
             redirect_to store_path, notice: "No change in shopping list name."
             #flash[:notice] = "No change in shopping list name."
           else
-            customer_shopping_list.shopping_list_name = params[:shopping_list_name]
-            customer_shopping_list.save
+            if CustomerShoppingList.where(shopping_list_name: params[:shopping_list_name]).count > 0
+              redirect_to store_path, notice: "Can't rename to #{params[:shopping_list_name]} - already used."
+            else
+              customer_shopping_list.shopping_list_name = params[:shopping_list_name]
+              customer_shopping_list.save
+              session[:customer_shopping_list_name] = params[:shopping_list_name]
+            end
           end
         else
           redirect_to store_path, notice: "Nothing to rename."
           #flash[:notice] = "Nothing to rename."
         end
-        session[:customer_shopping_list_name] = params[:shopping_list_name]
         
       elsif params[:commit] == "Create New Shopping List"
         if not params[:shopping_list_name].blank?
@@ -154,7 +158,8 @@ class StoreController < ApplicationController
       session[:category] = params[:category]
       session[:sub_category] = ""
       session[:sub_category_group] = ""
-      @products = nil
+      #@products = nil
+      @products = Product.where(category: session[:category]).order(:sku)
     elsif not params[:sub_category].blank?
       session[:sub_category] = params[:sub_category]
       session[:sub_category_group] = ""
@@ -171,7 +176,8 @@ class StoreController < ApplicationController
       elsif not session[:sub_category].blank?
         @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
       else
-        @products = nil
+        @products = Product.where(category: session[:category]).order(:sku)
+        #@products = nil
       end
     end
     
