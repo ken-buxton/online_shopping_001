@@ -220,7 +220,8 @@ class StoreController < ApplicationController
           "select P.*, CSLI.quantity, CSLI.note
            from customer_shopping_list_items CSLI
              inner join products P on CSLI.product_id = P.id
-           where CSLI.customer_shopping_list_id = #{customer_shopping_list_id}"
+           where CSLI.customer_shopping_list_id = #{customer_shopping_list_id}
+           order by P.category, P.sub_category, P.sub_category_group, P.brand, P.descr"
         )
       end
     end

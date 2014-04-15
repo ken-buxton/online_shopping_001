@@ -94,8 +94,16 @@ html, body {
 
 #columns {
   background: #141;
-  // background-size: cover;
-  height: 80%;
+  .top {
+    vertical-align: top;
+  }
+  
+  .shopping_list_text {
+    width: 120px; background-color: Khaki;
+  }
+  .shopping_list_button {
+    background-color: Khaki;
+  }
     
   table {
     border-collapse: collapse;
@@ -121,11 +129,38 @@ html, body {
   }
 
   #main {
-    background: white;
-    padding: 0.5em;
+    background: Khaki;
+    padding: 1em;
   }
   
   #rside {
+    // <fieldset style="border: solid; color: #bfb; padding: 0.5em;">
+      // <legend style="font-size: medium;">Your Shopping Lists</legend>
+    fieldset {
+      border: solid;
+      color: #bfb;
+      padding: 1em;
+    }
+    legend {
+      font-size: medium;
+    }
+    
+    .short_brand_descr {
+      width: 15em; 
+      display: inline-block; 
+      white-space: nowrap; 
+      overflow-x: hidden;
+    }
+    
+    .qty_update {
+      width: 40px; 
+      text-align: right;
+    }
+    
+    table {
+      color: #000;
+    }
+    
     ul {
       padding: 0;
       li {

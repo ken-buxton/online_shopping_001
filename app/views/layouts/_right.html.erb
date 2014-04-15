@@ -1,11 +1,10 @@
-	<td style="vertical-align: top;">
+	<td class="top">
 	<div id="rside">
 		<% if notice %>
 			<p id="notice"><%= notice%></p>
 		<% end %>
 
-		<fieldset style="border: solid; color: #bfb; padding: 0.5em;">
-			<legend style="font-size: medium;">Your Shopping Lists</legend>
+		<fieldset> <legend>Your Shopping Lists</legend>
 
 		<%= form_tag store_path, class: 'customer_shopping_list' do %>
 			<%= select_tag 'set_customer_shopping_list', 
@@ -18,26 +17,24 @@
 		<br>
 
 		<%= form_tag store_path, class: 'shopping_list_name' do %>
-			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, style: "width: 120px; background-color: Khaki;" %>
+			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text" %>
 			<br>
-			<%= submit_tag "Create New Shopping List", controller: "store", style: "background-color: Khaki;" %>
-			<%= submit_tag "Rename Current List", controller: "store", style: "background-color: Khaki;" %>
+			<%= submit_tag "Create New Shopping List", controller: "store", class: "shopping_list_button" %>
+			<%= submit_tag "Rename Current List", controller: "store", class: "shopping_list_button" %>
 			<%= submit_tag "Delete Current List", controller: "store" %>
 		<% end %>
 		</fieldset>
-		<br>
-		
+		<br>		
 
-		<fieldset style="border: solid; color: #bfb; padding: 0.5em;">
-			<legend style="font-size: medium;">
+		<fieldset>
+			<legend>
 				<%= "Your Shopping Items" %>
 				<% if not @cur_shopping_list.blank? %>
 					<%= " (" + @cur_shopping_list + ")" %>
 				<% end %>
 			</legend>
-		<!-- <ul><li><p>Your Shopping Items:</p></li></ul> -->
 		<% if not @customer_shopping_list_items.nil? %>
-			<table style="color: #333333;">
+			<table>
 				<tr class="top_line">
 					<th>Brand - Description (Quantity)</th>
 					<th class="right_justify">Min Wgt</th>
@@ -63,7 +60,7 @@
 						<% end %>
 						<% this_item += sanitize(item['descr']) %> 
 						<% this_item += "(" + item['qty_desc'] + ")" %>
-						<td style="width: 15em; display: inline-block; white-space: nowrap; overflow-x: hidden;" title="<%= this_item %>">
+						<td class="short_brand_descr" title="<%= this_item %>">
 							<%= this_item %>
 						</td>
 						<td class="right_justify"><%= number_with_precision(item['min_qty_weight'], precision: 2) %> </td>
@@ -74,7 +71,9 @@
 						<td class="right_justify">
 							<%= form_tag store_path do %>
 								<span>
-								<%= number_field_tag 'set_change_qty_' + item['id'].to_s, item['quantity'], in: 0.1..10, style: "width: 40px; text-align: right;" %>
+								<%= number_field_tag 'set_change_qty_' + item['id'].to_s, item['quantity'], in: 0.1..10, 
+									class: "qty_update" 
+								%>
 								<%= submit_tag "Change", controller: "store" %>
 								</span>
 							<% end %>

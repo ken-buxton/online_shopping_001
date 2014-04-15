@@ -1,14 +1,6 @@
 OnlineShopping001::Application.routes.draw do
   match "store/index", via: [:get, :post]
   root to: 'store#index', as: 'store', via: [:get, :post]
-  
-  # resources :products
-# 
-  # resources :states
-# 
-  # resources :stores
-# 
-  # resources :food_features
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
