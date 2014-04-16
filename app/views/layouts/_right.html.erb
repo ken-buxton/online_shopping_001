@@ -7,21 +7,29 @@
 		<fieldset> <legend>Your Shopping Lists</legend>
 
 		<%= form_tag store_path, class: 'customer_shopping_list' do %>
+			<%= label_tag 'set_customer_shopping_list', 'Customer Shopping Lists (click to show)'%>
 			<%= select_tag 'set_customer_shopping_list', 
 				options_for_select(@customer_shopping_lists, @cur_shopping_list),
-				onchange: 'this.form.submit()'
+				onchange: 'this.form.submit()',
+				title: "Click to show all shopping lists"
 			%>
 			<%= submit_tag 'submit' %>
 			<%= javascript_tag "$('.customer_shopping_list input').hide()" %>
 		<% end %>
+
 		<br>
 
 		<%= form_tag store_path, class: 'shopping_list_name' do %>
-			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text" %>
+			<%= label_tag 'shopping_list_name', 'Create/Rename List Name:'%>
+			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text", 
+				title: "Shopping list name to be used when creating or renaming a shopping list" %>
 			<br>
-			<%= submit_tag "Create New Shopping List", controller: "store", class: "shopping_list_button" %>
-			<%= submit_tag "Rename Current List", controller: "store", class: "shopping_list_button" %>
-			<%= submit_tag "Delete Current List", controller: "store" %>
+			<%= submit_tag "Create", controller: "store", class: "shopping_list_button", 
+				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to create a new shopping list"  %>
+			<%= submit_tag "Rename", controller: "store", class: "shopping_list_button", 
+				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to rename the current shopping list"  %>
+			<%= submit_tag "Delete", controller: "store", 
+				title: "Press this button to delete the current shopping list"  %>
 		<% end %>
 		</fieldset>
 		<br>		
@@ -40,7 +48,6 @@
 					<th class="right_justify">Min Wgt</th>
 					<th class="right_justify">Price</th>
 					<th>Unit</th>
-					<!-- <th class="right_justify">Qty</th> -->
 					<th class="center">Quantity</th>
 					<th class="right_justify">Ext Price</th>
 					<th>Note</th>
@@ -59,14 +66,18 @@
 							<% this_item += " - " %>
 						<% end %>
 						<% this_item += sanitize(item['descr']) %> 
-						<% this_item += "(" + item['qty_desc'] + ")" %>
+						<% this_item += " (" + item['qty_desc'] + ")" %>
 						<td class="short_brand_descr" title="<%= this_item %>">
-							<%= this_item %>
+							<% if this_item.size > 30 %>
+								<%= this_item[0..29] + " ..." %>
+							<% else %>
+								<%= this_item %>
+							<% end %>
 						</td>
+						
 						<td class="right_justify"><%= number_with_precision(item['min_qty_weight'], precision: 2) %> </td>
 						<td class="right_justify"><%= number_to_currency(item['price']) %></td>
 						<td><%= item['uofm'] %></td>
-						<!-- <td class="right_justify"><%= item['quantity'] %></td> -->
 												
 						<td class="right_justify">
 							<%= form_tag store_path do %>
@@ -81,16 +92,15 @@
 						
 						<td class="right_justify"><%= number_to_currency(item['price'].to_f * item['quantity'].to_f) %></td>
 						<td><%= item['note'] %></td>
-						<td><%= link_to "Delete", controller: "store", delete_from_list: item['id'] %></td>
+						<td style="width: 3em;"><%= link_to "Delete", controller: "store", delete_from_list: item['id'] %></td>
 					</tr>
 				<% end %>
 				
-				<tr class="top_line">
+				<tr class="bottom_line">
 					<td class="bold"><%= "Total Items: #{item_count}"%></td>
 					<td></td>
 					<td></td>
 					<td></td>
-					<!-- <td></td> -->
 					<td class="right_justify bold">Total</td>
 					<td class="right_justify bold"><%= number_to_currency(total) %></td>
 					<td></td>

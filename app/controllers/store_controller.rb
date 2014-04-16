@@ -74,7 +74,7 @@ class StoreController < ApplicationController
       end
       
     elsif not params[:commit].nil?
-      if params[:commit] == "Rename Current List"
+      if params[:commit] == "Rename"
         customer_id, customer_shopping_list = get_named_customer_shopping_info
         if not customer_id.nil? and not customer_shopping_list.nil?
           if session[:customer_shopping_list_name] == params[:shopping_list_name]
@@ -82,7 +82,7 @@ class StoreController < ApplicationController
             #flash[:notice] = "No change in shopping list name."
           else
             if CustomerShoppingList.where(shopping_list_name: params[:shopping_list_name]).count > 0
-              redirect_to store_path, notice: "Can't rename to #{params[:shopping_list_name]} - already used."
+              redirect_to store_path, notice: "Can't rename to #{params[:shopping_list_name]} - that name is already used."
             else
               customer_shopping_list.shopping_list_name = params[:shopping_list_name]
               customer_shopping_list.save
@@ -94,7 +94,7 @@ class StoreController < ApplicationController
           #flash[:notice] = "Nothing to rename."
         end
         
-      elsif params[:commit] == "Create New Shopping List"
+      elsif params[:commit] == "Create"
         if not params[:shopping_list_name].blank?
           session[:customer_shopping_list_name] = params[:shopping_list_name]
           customer_id, customer_shopping_list = get_named_customer_shopping_info
@@ -109,7 +109,7 @@ class StoreController < ApplicationController
           #flash[:notice] = "No name given for new shopping list."
         end
         
-      elsif params[:commit] == "Delete Current List"
+      elsif params[:commit] == "Delete"
         session[:customer_shopping_list_name] = params[:shopping_list_name]
         customer_id, customer_shopping_list = get_named_customer_shopping_info
         if not customer_id.nil? and not customer_shopping_list.nil?
@@ -188,9 +188,21 @@ class StoreController < ApplicationController
     # Determine what we'll display in the left hand margin
     logger.debug "session[:category] = #{session[:category]}"
     conn = ActiveRecord::Base.connection
-    @categories = conn.select_values("select distinct category from products")
-    @sub_categories = conn.select_values("select distinct sub_category from products where category #{equal_or_is_null(session[:category])}")
-    @sub_category_groups = conn.select_values("select distinct sub_category_group from products where category #{equal_or_is_null(session[:category])} and sub_category #{equal_or_is_null(session[:sub_category])}")
+    @categories = conn.select_values(
+      "select distinct category 
+      from products 
+      order by category")
+    @sub_categories = conn.select_values(
+      "select distinct sub_category 
+      from products 
+      where category #{equal_or_is_null(session[:category])} 
+      order by sub_category")
+    @sub_category_groups = conn.select_values(
+      "select distinct sub_category_group 
+      from products 
+      where category #{equal_or_is_null(session[:category])}
+        and sub_category #{equal_or_is_null(session[:sub_category])} 
+        order by sub_category_group")
     @cur_category = session[:category]
     @cur_sub_category = session[:sub_category]
     
@@ -207,7 +219,7 @@ class StoreController < ApplicationController
     # Setup the shopping lists for the current customers
     @customer_shopping_lists = CustomerShoppingList.where(customer_id: customer_id).order(:shopping_list_name)
     @cur_shopping_list = nil
-    if not session[:customer_shopping_list_name].nil?
+    if not session[:customer_shopping_list_name].blank?
       customer_shopping_list = CustomerShoppingList.
         where(customer_id: customer_id, shopping_list_name: session[:customer_shopping_list_name]).order(:shopping_list_name).first
       if not customer_shopping_list.nil?

@@ -1,1 +1,0 @@
-json.extract! @product, :id, :sku, :upc, :brand, :descr, :qty_desc, :min_qty_weight, :image, :category, :sub_category, :sub_category_group, :uofm, :price, :sale_price, :on_sale, :created_at, :updated_at
