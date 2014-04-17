@@ -20,15 +20,17 @@
 		<br>
 
 		<%= form_tag store_path, class: 'shopping_list_name' do %>
-			<%= label_tag 'shopping_list_name', 'Create/Rename List Name:'%>
+			<%= label_tag 'shopping_list_name', 'Create/Rename:'%>
+			<span style="margin-left: 10px;"></span>
 			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text", 
 				title: "Shopping list name to be used when creating or renaming a shopping list" %>
-			<br>
-			<span style="margin-left: 168px;"></span>
-			<%= submit_tag "Create", controller: "store", class: "shopping_list_button", 
+			<%= submit_tag "Create", controller: "store", 
 				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to create a new shopping list"  %>
-			<%= submit_tag "Rename", controller: "store", class: "shopping_list_button", 
+			<%= submit_tag "Rename", controller: "store", 
 				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to rename the current shopping list"  %>
+			<br>
+			<%= label_tag 'Delete', 'Delete:'%>
+			<span style="margin-left: 67px;"></span>
 			<%= submit_tag "Delete", controller: "store", 
 				title: "Press this button to delete the current shopping list"  %>
 			
