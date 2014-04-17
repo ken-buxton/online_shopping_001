@@ -141,7 +141,7 @@ class StoreController < ApplicationController
           #flash[:notice] = "Nothing to delete."
         end
         
-      elsif params[:commit] == "Change"
+      elsif params[:commit] == "Change Qty"
         params.each do |key, new_value|
           if key =~ /^set_change_qty_/
             product_id = key["set_change_qty_".size..-1].to_i
@@ -152,6 +152,24 @@ class StoreController < ApplicationController
               if CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).count > 0
                 item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
                 item.quantity = new_value
+                item.save
+              end
+            end            
+          end
+        end
+        
+      elsif params[:commit] == "Change Note"
+        params.each do |key, new_value|
+          if key =~ /^set_change_note_/
+            product_id = key["set_change_note_".size..-1].to_i
+            logger.debug "product_id=#{product_id}"
+            
+            customer_id, customer_shopping_list = get_named_customer_shopping_info
+            if not customer_id.nil? and not customer_shopping_list.nil?
+              # If item already exists, add a count of 1 to current count
+              if CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).count > 0
+                item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
+                item.note = new_value
                 item.save
               end
             end            

@@ -24,12 +24,14 @@
 			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text", 
 				title: "Shopping list name to be used when creating or renaming a shopping list" %>
 			<br>
+			<span style="margin-left: 168px;"></span>
 			<%= submit_tag "Create", controller: "store", class: "shopping_list_button", 
 				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to create a new shopping list"  %>
 			<%= submit_tag "Rename", controller: "store", class: "shopping_list_button", 
 				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to rename the current shopping list"  %>
 			<%= submit_tag "Delete", controller: "store", 
 				title: "Press this button to delete the current shopping list"  %>
+			
 		<% end %>
 		</fieldset>
 		<br>		
@@ -80,18 +82,32 @@
 						<td><%= item['uofm'] %></td>
 												
 						<td class="right_justify">
-							<%= form_tag store_path do %>
+							<% set_change_qty_x = 'set_change_qty_' + item['id'].to_s %>
+							<%= form_tag store_path, class: set_change_qty_x do %>
 								<span>
-								<%= number_field_tag 'set_change_qty_' + item['id'].to_s, item['quantity'], in: 0.1..10, 
+								<%= number_field_tag set_change_qty_x, item['quantity'], in: 0.1..10, 
 									class: "qty_update" 
 								%>
-								<%= submit_tag "Change", controller: "store" %>
+								<%= submit_tag "Change Qty", controller: "store", class: 'submit_only' %>
+								<%= javascript_tag "$('.#{set_change_qty_x} .submit_only').hide()" %>
 								</span>
 							<% end %>
 						</td>					
 						
 						<td class="right_justify"><%= number_to_currency(item['price'].to_f * item['quantity'].to_f) %></td>
-						<td><%= item['note'] %></td>
+						
+						<td>
+							<% set_change_note_x = 'set_change_note_' + item['id'].to_s %>
+							<%= form_tag store_path, class: set_change_note_x do %>
+								<span>
+								<%= text_field_tag set_change_note_x, item['note']
+								%>
+								<%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
+								<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %>
+								</span>
+							<% end %>
+						</td>					
+						
 						<td style="width: 3em;"><%= link_to "Delete", controller: "store", delete_from_list: item['id'] %></td>
 					</tr>
 				<% end %>
