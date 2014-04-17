@@ -7,8 +7,8 @@
 		<fieldset> <legend>Your Shopping Lists</legend>
 
 		<%= form_tag store_path, class: 'customer_shopping_list' do %>
-			<%= label_tag 'set_customer_shopping_list', 'Customer Shopping Lists (click to show)'%>
-			<%= select_tag 'set_customer_shopping_list', 
+			<%= label_tag 'set_customer_shopping_list_name', 'Customer Shopping Lists (click to show)'%>
+			<%= select_tag 'set_customer_shopping_list_name', 
 				options_for_select(@customer_shopping_lists, @cur_shopping_list),
 				onchange: 'this.form.submit()',
 				title: "Click to show all shopping lists"

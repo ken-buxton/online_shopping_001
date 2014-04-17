@@ -43,6 +43,11 @@ html, body {
   margin: -0.25em 0.1em;
 }
 
+.show_product_images {
+  //float: left;
+  margin: -0.25em 0.1em;
+}
+
 .top_line {
   background: #9c9;
 }
@@ -118,6 +123,7 @@ html, body {
   }
   
   #lside {
+    width: 150px;
     ul {
       padding: 0;
       li {
