@@ -10,7 +10,8 @@ class StoreController < ApplicationController
     # Make sure all session variables have a value (nil if don't exist)
     session_vars = [:category, :sub_category, :sub_category_group, 
       :customer_shopping_list_name, :customer_email,
-      :show_product_images
+      :show_product_images,
+      :search_value
     ]
     session_vars.each do |session_var|
       if session[session_var].nil?
@@ -156,6 +157,9 @@ class StoreController < ApplicationController
             end            
           end
         end
+        
+      elsif params[:commit] == "Search"
+        session[:search_value] = params[:search_value]
       end
 
     end
@@ -165,12 +169,16 @@ class StoreController < ApplicationController
     # ************************************************************
     # Check for a change in category, sub_category, and sub_category_group. We'll only get one.
     # Pull products for new situation
+    @search_value = session[:search_value]
     if not params[:category].blank?
       session[:category] = params[:category]
       session[:sub_category] = ""
       session[:sub_category_group] = ""
       #@products = nil
       @products = Product.where(category: session[:category]).order(:sku)
+      if @search_value != ""
+        @products = @products.where("descr like '%#{@search_value}%'")
+      end
     elsif not params[:sub_category].blank?
       session[:sub_category] = params[:sub_category]
       session[:sub_category_group] = ""
@@ -188,7 +196,9 @@ class StoreController < ApplicationController
         @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
       else
         @products = Product.where(category: session[:category]).order(:sku)
-        #@products = nil
+        if @search_value != ""
+          @products = @products.where("descr like '%#{@search_value}%'")
+        end
       end
     end
     
