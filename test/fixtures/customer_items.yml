@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer_id: 1
+  product_id: 1
+  latest_reference_date: 2014-04-18 13:02:41
+
+two:
+  customer_id: 1
+  product_id: 1
+  latest_reference_date: 2014-04-18 13:02:41

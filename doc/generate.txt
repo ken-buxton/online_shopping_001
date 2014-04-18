@@ -14,3 +14,8 @@ rails generate model CustomerShoppingListItem customer_shopping_list_id:integer 
 
 rails generate active_admin:resource CustomerShoppingList
 rails generate active_admin:resource CustomerShoppingListItem
+
+rails generate migration AddFeaturesToProducts featured_item:boolean food_feature:string
+
+rails generate model CustomerItem customer_id:integer product_id:integer latest_reference_date:datetime
+rails destroy model CustomerItems

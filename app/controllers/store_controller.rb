@@ -8,10 +8,10 @@ class StoreController < ApplicationController
     # Session variables: :category, :sub_category, :sub_category_group, :customer_shopping_list_name, :customer_email
     # 
     # Make sure all session variables have a value (nil if don't exist)
-    session_vars = [:category, :sub_category, :sub_category_group, 
+    session_vars = [:top_level, :category, :sub_category, :sub_category_group, 
       :customer_shopping_list_name, :customer_email,
       :show_product_images,
-      :search_value
+      :search_value, :food_feature
     ]
     session_vars.each do |session_var|
       if session[session_var].nil?
@@ -34,6 +34,8 @@ class StoreController < ApplicationController
       session[:sub_category] = ""
       session[:sub_category_group] = ""
       session[:customer_shopping_list_name] = ""
+      session[:search_value] = ""
+      session[:food_feature] = ""
       if params[:set_customer_email].blank?
         session[:customer_email] = ""
       else
@@ -45,10 +47,10 @@ class StoreController < ApplicationController
         end
       end
       
-    elsif not params[:set_customer_shopping_list_name].nil?
+    elsif not params[:set_food_feature].nil?
       # Changed current shopping list
       # Update to new shopping list
-      session[:customer_shopping_list_name] = params[:set_customer_shopping_list_name]
+      session[:food_feature] = params[:set_food_feature]
       
     elsif not params[:set_show_product_images_hidden].nil?
       # check_box_tag will not send back a value parameter if 
@@ -58,6 +60,31 @@ class StoreController < ApplicationController
         session[:show_product_images] = "yes"
       else
         session[:show_product_images] = "no"
+      end
+          
+    elsif not params[:add_to_my_items].nil?
+      # Added an item to the current shopping list
+      product_id = params[:add_to_my_items]      
+      # First, make sure there is a shopping list to add to
+      customer_id = get_customer_info
+      if not customer_id.nil?
+        # If item already exists, add a count of 1 to current count
+        if CustomerItem.where(customer_id: customer_id, product_id: product_id).count == 0
+          CustomerItem.create(customer_id: customer_id, product_id: product_id, latest_reference_date: Time.now)
+        end
+      end
+          
+    elsif not params[:remove_from_my_items].nil?
+      # Added an item to the current shopping list
+      product_id = params[:remove_from_my_items]      
+      # First, make sure there is a shopping list to add to
+      customer_id = get_customer_info
+      if not customer_id.nil?
+        # If item already exists, add a count of 1 to current count
+        if CustomerItem.where(customer_id: customer_id, product_id: product_id).count > 0
+          item = CustomerItem.where(customer_id: customer_id, product_id: product_id).first
+          item.destroy
+        end
       end
           
     elsif not params[:add_to_list].nil?
@@ -178,71 +205,138 @@ class StoreController < ApplicationController
         
       elsif params[:commit] == "Search"
         session[:search_value] = params[:search_value]
+      elsif params[:commit] == "Clear"
+        session[:search_value] = ""
       end
 
     end
+
     
     # ************************************************************
-    # Determine what products to display
+    # Setup the customer list
+    @customers = Customer.select(:email).order(:email)
+    @customer_email = ""
+    customer_id = nil
+    if not session[:customer_email].blank?
+      @customer_email = session[:customer_email]
+      customer_id = Customer.where(email: session[:customer_email]).first.id
+    end
+    
     # ************************************************************
-    # Check for a change in category, sub_category, and sub_category_group. We'll only get one.
-    # Pull products for new situation
-    @search_value = session[:search_value]
-    if not params[:category].blank?
-      session[:category] = params[:category]
+    # Setup the food features list
+    @food_features = FoodFeature.select(:name).order(:name)
+    #@food_features = Customer.select(:email).order(:email)
+    @cur_food_feature = ""
+    if not session[:food_feature].blank?
+      @cur_food_feature = session[:food_feature]
+    end
+    
+    # ************************************************************
+    # Set up top levels
+    # ************************************************************
+    conn = ActiveRecord::Base.connection
+    @categories = []
+    @sub_categories = []
+    @sub_category_group = []
+    
+    @top_levels = ["My Items", "Sale Items", "Featured Items", "All Items"]
+    logger.debug "params[:top_level]=#{params[:top_level]}"
+    if not params[:top_level].blank?
+      session[:top_level] = params[:top_level]
+      session[:category] = ""
       session[:sub_category] = ""
       session[:sub_category_group] = ""
-      #@products = nil
-      @products = Product.where(category: session[:category]).order(:sku)
-      if @search_value != ""
-        @products = @products.where("descr like '%#{@search_value}%'")
-      end
-    elsif not params[:sub_category].blank?
-      session[:sub_category] = params[:sub_category]
-      session[:sub_category_group] = ""
-      @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
-    elsif not params[:sub_category_group].blank?
-      session[:sub_category_group] = params[:sub_category_group]
-      @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
+      logger.debug "session[:top_level]=#{session[:top_level]}"
+    end
+    @search_value = session[:search_value]
+    
+    @cur_top_level = session[:top_level]
+    @shopping_header = @cur_top_level
+    logger.debug "@cur_top_level=#{@cur_top_level}"
+    if @cur_top_level == "My Items"
+      @products = Product.where("id in (select product_id from customer_items where customer_id = #{customer_id})").order(:category, :sub_category, :sub_category_group)
+      
+    elsif @cur_top_level == "Sale Items"
+      @products = Product.where("on_sale = 't'").order(:category, :sub_category, :sub_category_group)
+              
+    elsif @cur_top_level == "Featured Items"
+      @products = Product.where("featured_item = 't'").order(:category, :sub_category, :sub_category_group)
+                    
+    elsif @cur_top_level == "All Items"
 
-    else
-      # No changes in category, sub_category, and sub_category_group
-      # Figure out what we displayed last using session category, sub_category, and sub_category_group
-      if not session[:sub_category_group].blank?
-        @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
-      elsif not session[:sub_category].blank?
-        @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
-      else
+      # ************************************************************
+      # Determine what products to display
+      # ************************************************************
+      # Check for a change in category, sub_category, and sub_category_group. We'll only get one.
+      # Pull products for new situation
+      if not params[:category].blank?
+        session[:category] = params[:category]
+        session[:sub_category] = ""
+        session[:sub_category_group] = ""
+        #@products = nil
         @products = Product.where(category: session[:category]).order(:sku)
-        if @search_value != ""
-          @products = @products.where("descr like '%#{@search_value}%'")
+        @shopping_header += " > #{session[:category]}"
+      elsif not params[:sub_category].blank?
+        session[:sub_category] = params[:sub_category]
+        session[:sub_category_group] = ""
+        @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
+        @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
+      elsif not params[:sub_category_group].blank?
+        session[:sub_category_group] = params[:sub_category_group]
+        @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
+        @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
+  
+      else
+        # No changes in category, sub_category, and sub_category_group
+        # Figure out what we displayed last using session category, sub_category, and sub_category_group
+        if not session[:sub_category_group].blank?
+          @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
+          @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
+        elsif not session[:sub_category].blank?
+          @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
+          @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
+        elsif not session[:category].blank?
+          @products = Product.where(category: session[:category]).order(:sku)
+          @shopping_header += " > #{session[:category]}"
+        else
+          @products = Product.order(:sku)
         end
       end
+    
+      # ************************************************************
+      # Determine what to dipsplay in the product category,
+      # sub_category, and sub_category_group list
+      # ************************************************************
+      # Determine what we'll display in the left hand margin
+      @categories = conn.select_values(
+        "select distinct category 
+        from products 
+        order by category")
+      @sub_categories = conn.select_values(
+        "select distinct sub_category 
+        from products 
+        where category #{equal_or_is_null(session[:category])} 
+        order by sub_category")
+      @sub_category_groups = conn.select_values(
+        "select distinct sub_category_group 
+        from products 
+        where category #{equal_or_is_null(session[:category])}
+          and sub_category #{equal_or_is_null(session[:sub_category])} 
+          order by sub_category_group")
+      @cur_category = session[:category]
+      @cur_sub_category = session[:sub_category]
+      
     end
     
     # ************************************************************
-    # Determine what to dipsplay in the product category,
-    # sub_category, and sub_category_group list
-    # ************************************************************
-    # Determine what we'll display in the left hand margin
-    conn = ActiveRecord::Base.connection
-    @categories = conn.select_values(
-      "select distinct category 
-      from products 
-      order by category")
-    @sub_categories = conn.select_values(
-      "select distinct sub_category 
-      from products 
-      where category #{equal_or_is_null(session[:category])} 
-      order by sub_category")
-    @sub_category_groups = conn.select_values(
-      "select distinct sub_category_group 
-      from products 
-      where category #{equal_or_is_null(session[:category])}
-        and sub_category #{equal_or_is_null(session[:sub_category])} 
-        order by sub_category_group")
-    @cur_category = session[:category]
-    @cur_sub_category = session[:sub_category]
+    # At this point the list of products has been defined. Now add
+    # the search criteria
+    if @search_value != ""
+      @products = @products.where(%Q~lower(brand || "descr") like lower('%#{@search_value}%')~)
+    end
+    if @cur_food_feature != ""
+      @products = @products.where("food_feature = '#{@cur_food_feature}'")      
+    end
     
     # ************************************************************
     @show_product_images = true
@@ -250,15 +344,6 @@ class StoreController < ApplicationController
       @show_product_images = true
     elsif session[:show_product_images] == "no" 
       @show_product_images = false
-    end
-    
-    # ************************************************************
-    # Setup the customer list
-    @customers = Customer.select(:email).order(:email)
-    @customer_email = ""
-    if not session[:customer_email].blank?
-      @customer_email = session[:customer_email]
-      customer_id = Customer.where(email: session[:customer_email]).first.id
     end
 
     # ************************************************************
@@ -287,6 +372,10 @@ class StoreController < ApplicationController
   end
   
   private
+  
+  def get_customer_info
+    customer_id = Customer.where(email: session[:customer_email]).first.id
+  end
   
   def get_first_customer_shopping_info
     customer_id = Customer.where(email: session[:customer_email]).first.id

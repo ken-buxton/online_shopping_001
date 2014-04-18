@@ -43,6 +43,11 @@ html, body {
   margin: -0.25em 0.1em;
 }
 
+.food_features {
+  //float: left;
+  margin: -0.25em 0.1em;
+}
+
 .show_product_images {
   //float: left;
   margin: -0.25em 0.1em;
@@ -127,7 +132,7 @@ html, body {
   }
   
   #lside {
-    width: 150px;
+    width: 200px;
     ul {
       padding: 0;
       li {

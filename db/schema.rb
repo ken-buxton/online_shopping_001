@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140407195230) do
+ActiveRecord::Schema.define(version: 20140418170241) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -45,6 +45,14 @@ ActiveRecord::Schema.define(version: 20140407195230) do
 
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+
+  create_table "customer_items", force: true do |t|
+    t.integer  "customer_id"
+    t.integer  "product_id"
+    t.datetime "latest_reference_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "customer_shopping_list_items", force: true do |t|
     t.integer  "customer_shopping_list_id"
@@ -105,6 +113,8 @@ ActiveRecord::Schema.define(version: 20140407195230) do
     t.boolean  "on_sale"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "featured_item"
+    t.string   "food_feature"
   end
 
   create_table "states", force: true do |t|

@@ -1,4 +1,4 @@
-<h2> <%= 'Shopping Items' %></h2>
+<h2> <%= @shopping_header %></h2>
 
 <%= form_tag store_path, class: 'show_product_images' do %>
 	<%= label_tag 'set_show_product_images', 'Show Product Images' %>
@@ -18,6 +18,7 @@
 			<th></th>
 		<% end %>
 		<th class="left_justify">Brand - Description (Quantity)</th>
+		<th></th>
 		<th class="right_justify">Min Weight</th>
 		<th class="right_justify">Price</th>
 		<th>Unit</th>
@@ -41,10 +42,16 @@
 					<%= this_item %>
 				</td>
 				
+				<% if @cur_top_level == "My Items" %>
+					<td style="width: 3em;"><%= link_to "Remove from My Items", controller: "store", remove_from_my_items: product.id %></td>
+				<% else %>
+					<td style="width: 3em;"><%= link_to "Add to My Items", controller: "store", add_to_my_items: product.id %></td>
+				<% end %>
+				
 				<td class="right_justify"><%= product.min_qty_weight %> </td>
 				<td class="right_justify bold"><%= number_to_currency(product.price) %></td>
 				<td><%= product.uofm %></td>
-				<td style="width: 3em;"><%= link_to "Add", controller: "store", add_to_list: product.id %></td>
+				<td style="width: 3em;"><%= link_to "Add to List", controller: "store", add_to_list: product.id %></td>
 			</tr>
 		<% end %>
 	<% end %>

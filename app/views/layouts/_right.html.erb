@@ -102,8 +102,7 @@
 							<% set_change_note_x = 'set_change_note_' + item['id'].to_s %>
 							<%= form_tag store_path, class: set_change_note_x do %>
 								<span>
-								<%= text_field_tag set_change_note_x, item['note']
-								%>
+								<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em" %>
 								<%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
 								<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %>
 								</span>
