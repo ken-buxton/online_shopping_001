@@ -38,7 +38,8 @@
 				<% end %>
 				<% this_item += sanitize(product.descr) %> 
 				<% this_item += " (" + product.qty_desc + ")" %>
-				<td class="short_brand_descr" title="<%= this_item %>">
+				<% this_item_title = this_item + " - #{product.category}/#{product.sub_category}/#{product.sub_category_group}"%>
+				<td class="short_brand_descr" title="<%= this_item_title %>">
 					<%= this_item %>
 				</td>
 				

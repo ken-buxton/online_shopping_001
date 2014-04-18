@@ -71,7 +71,8 @@
 						<% end %>
 						<% this_item += sanitize(item['descr']) %> 
 						<% this_item += " (" + item['qty_desc'] + ")" %>
-						<td class="short_brand_descr" title="<%= this_item %>">
+						<% this_item_title = this_item + " - #{item['category']}/#{item['sub_category']}/#{item['sub_category_group']}"%>
+						<td class="short_brand_descr" title="<%= this_item_title %>">
 							<% if this_item.size > 30 %>
 								<%= this_item[0..29] + " ..." %>
 							<% else %>
