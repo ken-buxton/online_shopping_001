@@ -47,6 +47,11 @@ class StoreController < ApplicationController
         end
       end
       
+    elsif not params[:set_customer_shopping_list_name].nil?
+      # Changed current shopping list
+      # Update to new shopping list
+      session[:customer_shopping_list_name] = params[:set_customer_shopping_list_name]
+      
     elsif not params[:set_food_feature].nil?
       # Changed current shopping list
       # Update to new shopping list
