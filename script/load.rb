@@ -125,6 +125,9 @@ Customer.reset_pk_sequence
 Customer.create(email: "ken@gmail.com", password_digest: "12345", account_no: "12345678", preferred_store_id: preferred_store_id_bl, 
   first_name: "Ken", last_name: "Buxton", nick_name: "Ken", home_phone: "", cell_phone: "517-902-1572", 
   address1: "513 E. Logan", address2: "", city: "Tecumseh", state_id: state_id_mi, zip: "49286")
+Customer.create(email: "dave@gmail.com", password_digest: "12345", account_no: "51830723", preferred_store_id: preferred_store_id_bl, 
+  first_name: "David", last_name: "Buxton", nick_name: "Dave", home_phone: "", cell_phone: "810-287-8077", 
+  address1: "13875 Pierce Rd", address2: "", city: "Byron", state_id: state_id_mi, zip: "48418")
 Customer.create(email: "betty@hotmail.com", password_digest: "12345", account_no: "32453789", preferred_store_id: preferred_store_id_na, 
   first_name: "Elizabeth", last_name: "Smith", nick_name: "Betty", home_phone: "888-919-5555", cell_phone: "", 
   address1: "27 Main", address2: "", city: "Brooklyn", state_id: state_id_mi, zip: "49230")
