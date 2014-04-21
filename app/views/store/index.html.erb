@@ -1,15 +1,31 @@
 <h2> <%= @shopping_header %></h2>
 
-<%= form_tag store_path, class: 'show_product_images' do %>
-	<%= label_tag 'set_show_product_images', 'Show Product Images' %>
-	<%= check_box_tag 'set_show_product_images', 		#if @show_product_images then 1 else 0 end
-		1, @show_product_images,
-		onclick: 'this.form.submit()'
-	%>
-	<%= hidden_field_tag 'set_show_product_images_hidden', 0 %>
-	<%= submit_tag 'submit', class: 'submit_only' %>
-	<%= javascript_tag "$('.show_product_images .submit_only').hide()" %>
-<% end %>
+<table><tr>
+	<td>
+		<%= form_tag store_path, class: 'show_product_images' do %>
+			<%= label_tag 'set_show_product_images', 'Show Product Images' %>
+			<%= check_box_tag 'set_show_product_images', 		#if @show_product_images then 1 else 0 end
+				1, @show_product_images,
+				onclick: 'this.form.submit()'
+			%>
+			<%= hidden_field_tag 'set_show_product_images_hidden', 0 %>
+			<%= submit_tag 'submit', class: 'submit_only' %>
+			<%= javascript_tag "$('.show_product_images .submit_only').hide()" %>
+		<% end %>
+	</td>
+	<td>
+		<%= form_tag store_path, class: 'show_category_info' do %>
+			<%= label_tag 'set_show_category_info', 'Show Category Info' %>
+			<%= check_box_tag 'set_show_category_info', 		#if @show_product_images then 1 else 0 end
+				1, @show_category_info,
+				onclick: 'this.form.submit()'
+			%>
+			<%= hidden_field_tag 'set_show_category_info_hidden', 0 %>
+			<%= submit_tag 'submit', class: 'submit_only' %>
+			<%= javascript_tag "$('.show_category_info .submit_only').hide()" %>
+		<% end %>
+	</td>
+</tr></table>
 <br>
 
 <table>
@@ -38,9 +54,13 @@
 				<% end %>
 				<% this_item += sanitize(product.descr) %> 
 				<% this_item += " (" + product.qty_desc + ")" %>
-				<% this_item_title = this_item + " - #{product.category}/#{product.sub_category}/#{product.sub_category_group}"%>
+				<% this_item_category = "#{product.category}/#{product.sub_category}/#{product.sub_category_group}" %>
+				<% this_item_title = this_item + " - " + this_item_category %>
 				<td class="short_brand_descr" title="<%= this_item_title %>">
 					<%= this_item %>
+					<% if @show_category_info %>
+						<br><%= this_item_category %>
+					<% end %>
 				</td>
 				
 				<% if @cur_top_level == "My Items" %>

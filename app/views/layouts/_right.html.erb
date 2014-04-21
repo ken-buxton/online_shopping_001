@@ -20,20 +20,27 @@
 		<br>
 
 		<%= form_tag store_path, class: 'shopping_list_name' do %>
-			<%= label_tag 'shopping_list_name', 'Create/Rename:'%>
+			<%= label_tag 'shopping_list_name', 'Shopping List Name:'%>
 			<span style="margin-left: 10px;"></span>
 			<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text", 
 				title: "Shopping list name to be used when creating or renaming a shopping list" %>
 			<%= submit_tag "Create", controller: "store", 
-				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to create a new shopping list"  %>
+				title: "Enter shopping list name into 'Shopping List Name' field to left and press this button" + 
+					" to create a new (empty) shopping list"  %>
 			<%= submit_tag "Rename", controller: "store", 
-				title: "Enter shopping list name into 'Create/Rename List Name' field above and press this button to rename the current shopping list"  %>
+				title: "Enter shopping list name into 'Shopping List Name' field to left and press this button" + 
+					" to rename the current shopping list"  %>
+			<%= submit_tag "Copy", controller: "store", 
+				title: "Enter shopping list name into 'Shopping List Name' field to left and press this button" + 
+					" to copy the current shopping list into this new shopping list"  %>
+			<%= submit_tag "Merge", controller: "store", 
+				title: "Enter shopping list name into 'Shopping List Name' field to left and press this button" + 
+					" to merge the current shopping list into this new shopping list"  %>
 			<br>
 			<%= label_tag 'Delete', 'Delete:'%>
-			<span style="margin-left: 67px;"></span>
+			<span style="margin-left: 93px;"></span>
 			<%= submit_tag "Delete", controller: "store", 
 				title: "Press this button to delete the current shopping list"  %>
-			
 		<% end %>
 		</fieldset>
 		<br>		
@@ -46,6 +53,19 @@
 				<% end %>
 			</legend>
 		<% if not @customer_shopping_list_items.nil? %>
+		
+			<%= form_tag store_path, class: 'customer_shopping_list_order' do %>
+				<%= label_tag 'set_customer_shopping_list_order', 'Sort Order (click to show)'%>
+				<%= select_tag 'set_customer_shopping_list_order', 
+					options_for_select(@customer_shopping_list_orders, @cur_shopping_list_order),
+					onchange: 'this.form.submit()',
+					title: "Click to show all orders"
+				%>
+				<%= submit_tag 'submit' %>
+				<%= javascript_tag "$('.customer_shopping_list_order input').hide()" %>
+			<% end %>
+			<br>
+			
 			<table>
 				<tr class="top_line">
 					<th>Brand - Description (Quantity)</th>
@@ -59,9 +79,15 @@
 				</tr>
 			
 				<% item_count = 0 %>
+				<% package_count = 0 %>
 				<% total = 0.0 %>
 				<% @customer_shopping_list_items.each do |item| %>
 					<% item_count += 1 %>
+					<% if item['uofm'] == 'each' %>
+						<% package_count += item['quantity'] %>
+					<% else %>
+						<% package_count += 1 %>
+					<% end %>
 					<% total += (item['price'].to_f * item['quantity'].to_f) %>
 					<tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %>">
 						
@@ -71,12 +97,16 @@
 						<% end %>
 						<% this_item += sanitize(item['descr']) %> 
 						<% this_item += " (" + item['qty_desc'] + ")" %>
-						<% this_item_title = this_item + " - #{item['category']}/#{item['sub_category']}/#{item['sub_category_group']}"%>
+						<% this_item_category = "#{item['category']}/#{item['sub_category']}/#{item['sub_category_group']}" %>
+						<% this_item_title = this_item + " - " + this_item_category %>
 						<td class="short_brand_descr" title="<%= this_item_title %>">
 							<% if this_item.size > 30 %>
 								<%= this_item[0..29] + " ..." %>
 							<% else %>
 								<%= this_item %>
+							<% end %>
+							<% if @show_category_info %>
+								<br><%= this_item_category %>
 							<% end %>
 						</td>
 						
@@ -89,7 +119,8 @@
 							<%= form_tag store_path, class: set_change_qty_x do %>
 								<span>
 								<%= number_field_tag set_change_qty_x, item['quantity'], in: 0.1..10, 
-									class: "qty_update" 
+									class: "qty_update",
+									onchange: 'this.form.submit()'
 								%>
 								<%= submit_tag "Change Qty", controller: "store", class: 'submit_only' %>
 								<%= javascript_tag "$('.#{set_change_qty_x} .submit_only').hide()" %>
@@ -103,7 +134,9 @@
 							<% set_change_note_x = 'set_change_note_' + item['id'].to_s %>
 							<%= form_tag store_path, class: set_change_note_x do %>
 								<span>
-								<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em" %>
+								<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em",
+									onchange: 'this.form.submit()'
+							 	%>
 								<%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
 								<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %>
 								</span>
@@ -115,7 +148,7 @@
 				<% end %>
 				
 				<tr class="bottom_line">
-					<td class="bold"><%= "Total Items: #{item_count}"%></td>
+					<td class="bold"><%= "Total Items: #{item_count},   Packages: #{package_count}" %></td>
 					<td></td>
 					<td></td>
 					<td></td>
