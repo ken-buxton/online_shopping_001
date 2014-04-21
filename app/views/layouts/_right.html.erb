@@ -79,12 +79,12 @@
 				</tr>
 			
 				<% item_count = 0 %>
-				<% package_count = 0 %>
+				<% package_count = 0.0 %>
 				<% total = 0.0 %>
 				<% @customer_shopping_list_items.each do |item| %>
 					<% item_count += 1 %>
 					<% if item['uofm'] == 'each' %>
-						<% package_count += item['quantity'] %>
+						<% package_count += item['quantity'].to_f %>
 					<% else %>
 						<% package_count += 1 %>
 					<% end %>
