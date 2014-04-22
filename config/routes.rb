@@ -1,5 +1,5 @@
 OnlineShopping001::Application.routes.draw do
-  match "store/index", via: [:get, :post]
+  match "store/index", via: [:get, :post, :delete]
   root to: 'store#index', as: 'store', via: [:get, :post]
 
   devise_for :admin_users, ActiveAdmin::Devise.config

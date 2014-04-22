@@ -143,12 +143,17 @@
 							<% end %>
 						</td>					
 						
-						<td style="width: 3em;"><%= link_to "Delete", controller: "store", delete_from_list: item['id'] %></td>
+						<td style="width: 3em;">
+							<% del_conf_msg = "Are you sure you want to delete '#{this_item_title}' from your shopping list?" %>
+							<%= link_to "Delete", {controller: "store", delete_from_list: item['id']}, 
+								data: {confirm: del_conf_msg}, method: :delete
+							%>
+						</td>
 					</tr>
 				<% end %>
 				
 				<tr class="bottom_line">
-					<td class="bold"><%= "Total Items: #{item_count},   Packages: #{package_count}" %></td>
+					<td class="bold"><%= "Total Items: #{item_count},   Packages: #{package_count.to_i}" %></td>
 					<td></td>
 					<td></td>
 					<td></td>

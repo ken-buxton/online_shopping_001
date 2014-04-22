@@ -1,5 +1,8 @@
 class StoreController < ApplicationController
   
+  def dummy
+  end
+  
   def index
     # Parameter variables: :set_customer_email, :set_customer_shopping_list_name, :add_to_list, :delete_from_list, :commit, :shopping_list_name,
     #   :category, :sub_category, :sub_category_group
@@ -24,9 +27,16 @@ class StoreController < ApplicationController
       session[:show_product_images] == "yes"
     end
     
+    customer_shopping_list_orders = ["*Category/Sub-category/Sub-category Group",
+      "Price - Ascending", "Price - Descending", 
+      "Ext Price - Ascending", "Ext Price - Descending", 
+      "Brand/Description", "Description"]  
+        
     if session[:customer_shopping_list_order] == ""
-      session[:customer_shopping_list_order] == "*Category/Sub-category/Sub-category Group"
+      session[:customer_shopping_list_order] == customer_shopping_list_orders[0]
     end
+
+    #logger.debug "request=#{request.inspect}"
 
     # ************************************************************
     # Handle changes to the current customer or 
@@ -486,10 +496,7 @@ class StoreController < ApplicationController
 
     # ************************************************************
     # Setup the shopping lists for the current customers
-    @customer_shopping_list_orders = ["*Category/Sub-category/Sub-category Group",
-      "Price - Ascending", "Price - Descending", 
-      "Ext Price - Ascending", "Ext Price - Descending", 
-      "Brand/Description", "Description"]
+    @customer_shopping_list_orders = customer_shopping_list_orders
     @cur_shopping_list_order = session[:customer_shopping_list_order]
       
     @customer_shopping_lists = CustomerShoppingList.where(customer_id: customer_id).order(:shopping_list_name)
