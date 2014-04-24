@@ -4,7 +4,7 @@
 	<td>
 		<%= form_tag store_path, class: 'show_product_images' do %>
 			<%= label_tag 'set_show_product_images', 'Show Product Images' %>
-			<%= check_box_tag 'set_show_product_images', 		#if @show_product_images then 1 else 0 end
+			<%= check_box_tag 'set_show_product_images',
 				1, @show_product_images,
 				onclick: 'this.form.submit()'
 			%>
@@ -16,7 +16,7 @@
 	<td>
 		<%= form_tag store_path, class: 'show_category_info' do %>
 			<%= label_tag 'set_show_category_info', 'Show Category Info' %>
-			<%= check_box_tag 'set_show_category_info', 		#if @show_product_images then 1 else 0 end
+			<%= check_box_tag 'set_show_category_info',
 				1, @show_category_info,
 				onclick: 'this.form.submit()'
 			%>
@@ -26,7 +26,6 @@
 		<% end %>
 	</td>
 </tr></table>
-<br>
 
 <table>
 	<tr class="top_line">

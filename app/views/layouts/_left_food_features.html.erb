@@ -1,0 +1,13 @@
+	<%= form_tag store_path, class: 'food_features' do %>
+		<%= label_tag 'set_food_feature', 'Food Features' %>
+		<%= select_tag 'set_food_feature', 
+			options_for_select(@food_features, @cur_food_feature),
+			onchange: 'this.form.submit()',
+			title: "Click to show all food features",
+			# include_blank: true,
+			style: "width: 150px"
+		%>
+		<%= submit_tag 'submit' %>
+		<%= javascript_tag "$('.food_features input').hide()" %>
+		<br><span style="font-size: small;">(click to show)</span>
+	<% end %>	

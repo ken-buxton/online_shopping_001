@@ -1,57 +1,12 @@
 	<td class="top">
 	<div id="lside">
 
-	<%= form_tag store_path do %>
-		<!-- <%= label_tag 'search_value', 'Search:'%> -->
-		<%= search_field_tag 'search_value', @search_value, class: "search_value", placeholder: "Search...", style: "width: 130px",
-			title: "Search value" %>
-		<br>
-		<%= submit_tag "Search", controller: "store", 
-			title: "Press this button to search using the current search value"  %>
-		<%= submit_tag "Clear", controller: "store", 
-			title: "Press this button to clear the current search value"  %>
-	<% end %>
+	<%= render 'layouts/left_search' %>
 	<br>
 	
-	<%= form_tag store_path, class: 'food_features' do %>
-		<%= label_tag 'set_food_feature', 'Food Features (click to show)', style: "color: #bfb;" %>
-		<%= select_tag 'set_food_feature', 
-			options_for_select(@food_features, @cur_food_feature),
-			onchange: 'this.form.submit()',
-			title: "Click to show all food features",
-			include_blank: true,
-			style: "width: 150px"
-		%>
-		<%= submit_tag 'submit' %>
-		<%= javascript_tag "$('.food_features input').hide()" %>
-	<% end %>	
+	<%= render 'layouts/left_food_features' %>
 	<br>
 
-	<ul>
-		<% @top_levels.each do |top_level| %>
-			<li><%= link_to top_level, controller: "store", top_level: top_level %></li><br>
-			<% if top_level == "All Items" %>
-				<% @categories.each do |category| %>
-					<li><span style="margin-left: 30px;"/><%= link_to category, controller: "store", category: category %></li>
-					<% if category == @cur_category %>
-						<% @sub_categories.each do |sub_category| %>
-							<li><span style="margin-left: 60px;"/><%= link_to sub_category, controller: "store", sub_category: sub_category %></li>
-							<% if sub_category == @cur_sub_category %>
-								<% if @sub_category_groups.size > 1 %>
-									<% @sub_category_groups.each do |sub_category_group| %>
-										<% if sub_category_group.size > 0 %>									
-											<li><span style="margin-left: 90px;"/><%= link_to sub_category_group, controller: "store", sub_category_group: sub_category_group %></li>
-										<% else %>
-											<li><span style="margin-left: 90px;"/><%= link_to sub_category, controller: "store", sub_category_group: "" %></li>
-										<% end %>
-									<% end %>
-								<% end %>
-							<% end %>
-						<% end %>
-					<% end %>
-				<% end %>
-			<% end %>
-		<% end %>
-	</ul>
+	<%= render 'layouts/left_items' %>
 	</div>
 	</td>

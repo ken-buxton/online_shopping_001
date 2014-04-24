@@ -80,6 +80,9 @@ class StoreController < ApplicationController
       # Changed current shopping list
       # Update to new shopping list
       session[:food_feature] = params[:set_food_feature]
+      if session[:food_feature] == "All"
+        session[:food_feature] = ""
+      end
       
     elsif not params[:set_show_product_images_hidden].nil?
       logger.debug ":set_show_product_images_hidden"

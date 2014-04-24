@@ -11,14 +11,41 @@
  *= require_self
  *= require_tree .
  */
+$tm_bgcolor:          LemonChiffon ;      // #141, White, LemonChiffon 
+$tm_text:             Blue;       // #000, Navy
+
+$tm_banner_color:     Blue;       // #282
+$tm_banner_bgcolor:   #B8E8F0;     // #9c9
+
+$tm_grd_top_line:     #B8E8F0;    // Khaki
+$tm_grd_hdr:          Coral;      // #afa - the Category header lines
+$tm_grd_ll_odd:       #A0A0FF;    // #afa
+$tm_grd_ll_even:      Moccasin;   // #cfc
+$tm_grd_btm_line:     IndianRed;  // Khaki
+
+$tm_ntc_bgcolor:      #f0f0f0;
+$tm_ntc_bdrcolor:     Red;
+
+$tm_input_fields:     #B8E8F0;    // Khaki
+$tm_table_color:      #000;
+
+$tm_item_hover_bg:    Yellow;
+
+
 
 html, body {
   height: 100%;
   margin: 0;
+  background: $tm_bgcolor;
 }
 
+input[type='button'], input[type='submit'], select {
+  font-family: "Arial"; // Courier, Arial
+}
+
+
 #columns {
-  min-height: 500%; 
+  //min-height: 500%; 
 }
       
 // html { 
@@ -43,9 +70,19 @@ html, body {
   margin: -0.25em 0.1em;
 }
 
+.button_font {
+  font-family: "Courier"
+}
+
 .food_features {
   //float: left;
   margin: -0.25em 0.1em;
+  font-size: medium;
+  color: $tm_text;
+}
+
+#field_set {
+  border-width: 6px;
 }
 
 .show_product_images {
@@ -54,19 +91,23 @@ html, body {
 }
 
 .top_line {
-  background: #9c9;
+  background: $tm_grd_top_line;
+}
+
+.hdr_line {
+  background: $tm_grd_hdr;
 }
 
 .bottom_line {
-  background: Khaki;
+  background: $tm_grd_btm_line;   //Khaki;
 }
 
 .list_line_odd {
-  background: #cfc;
+  background: $tm_grd_ll_odd;
 }
 
 .list_line_even {
-  background: #afa;
+  background: $tm_grd_ll_even;
 }
 
 .right_justify {
@@ -87,12 +128,11 @@ html, body {
 }
 
 #banner {
-  background: #9c9;
-  //background: yellow;
+  background: $tm_banner_bgcolor;
   padding: 10px;
-  border-bottom: 2px solid;
+  border-bottom: 1px solid blue;
   font: small-caps 40px/40px "Times new Roman", serif;
-  color: #282;
+  color: $tm_banner_color;
   text-align: center;
   
   img {
@@ -102,28 +142,28 @@ html, body {
 
 #notice {
   color: #000 !important;
-  border: 2px solid red;
+  border: 2px solid $tm_ntc_bdrcolor;
   padding: 1em;
   margin-bottom: 2em;
-  background-color: #f0f0f0;
+  background-color: $tm_ntc_bgcolor;
   font: bold smaller sans-serif;
 }
 
 #columns {
-  background: #141; // #141
+  background: $tm_bgcolor; // #141
   .top {
     vertical-align: top;
   }
   
   .search_value {
-    width: 120px; background-color: Khaki;
+    width: 120px; background-color: $tm_input_fields;
   }
   
   .shopping_list_text {
-    width: 120px; background-color: Khaki;
+    width: 120px; background-color: $tm_input_fields;
   }
   .shopping_list_button {
-    background-color: Khaki;
+    background-color: $tm_input_fields;
   }
     
   table {
@@ -133,19 +173,24 @@ html, body {
   
   #lside {
     width: 200px;
+    color: $tm_text;    // #bfb
     ul {
       padding: 0;
       li {
         list-style: none;
+        margin-bottom: 5px;
         a, p {
-          color: #bfb;
+          color: $tm_text;    // #bfb
           font-size: medium;
+        }
+        a:hover {
+          background: $tm_item_hover_bg;
         }
       }
     }
     
     p {
-      color: #bfb;
+      color: $tm_text;  // #bfb
     }
 
   }
@@ -159,8 +204,28 @@ html, body {
       // vertical-align: center;
     }
     
-    background: Khaki;
-    padding: 1em;
+    background: $tm_bgcolor;  // Khaki
+    padding: 0em;
+    
+    h2 {
+      margin-top: 2px; 
+      margin-bottom: 5px;
+      color: $tm_text;
+      font: small-caps 20px/20px "Times new Roman", serif;
+      font-weight: bold;
+    }
+    
+    table {
+      margin-bottom: 5px;  
+      color: $tm_text;    
+      a {
+        color: $tm_text;
+      }
+        a:hover {
+          background: $tm_item_hover_bg;
+        }
+    }
+    
   }
   
   #rside {
@@ -168,8 +233,18 @@ html, body {
       // <legend style="font-size: medium;">Your Shopping Lists</legend>
     fieldset {
       border: solid;
-      color: #bfb;
+      color: $tm_text;    // #bfb
       padding: 1em;
+      table {
+        margin-bottom: 5px;  
+        color: $tm_text;    
+        a {
+          color: $tm_text;
+        }
+        a:hover {
+          background: $tm_item_hover_bg;
+        }
+      }
     }
     legend {
       font-size: medium;
@@ -180,23 +255,23 @@ html, body {
       text-align: right;
     }
     
-    table {
-      color: #000;
-    }
+    // table {
+      // color: $tm_table_color;   //#000;
+    // }
     
     ul {
       padding: 0;
       li {
         list-style: none;
         a, p {
-          color: #bfb;
+          color: $tm_text;    // #bfb
           font-size: medium;
         }
       }
     }
     
     p {
-      color: #bfb;
+      color: $tm_text;  // #bfb
     }
   }
 }

@@ -1,0 +1,26 @@
+	<ul>
+		<% @top_levels.each do |top_level| %>
+			<li><%= link_to top_level, controller: "store", top_level: top_level %></li><br>
+			<% if top_level == "All Items" %>
+				<% @categories.each do |category| %>
+					<li><span style="margin-left: 30px;"/><%= link_to category, controller: "store", category: category %></li>
+					<% if category == @cur_category %>
+						<% @sub_categories.each do |sub_category| %>
+							<li><span style="margin-left: 60px;"/><%= link_to sub_category, controller: "store", sub_category: sub_category %></li>
+							<% if sub_category == @cur_sub_category %>
+								<% if @sub_category_groups.size > 1 %>
+									<% @sub_category_groups.each do |sub_category_group| %>
+										<% if sub_category_group.size > 0 %>									
+											<li><span style="margin-left: 90px;"/><%= link_to sub_category_group, controller: "store", sub_category_group: sub_category_group %></li>
+										<% else %>
+											<li><span style="margin-left: 90px;"/><%= link_to sub_category, controller: "store", sub_category_group: "" %></li>
+										<% end %>
+									<% end %>
+								<% end %>
+							<% end %>
+						<% end %>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+	</ul>

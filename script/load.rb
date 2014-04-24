@@ -26,6 +26,7 @@ end
 # Add required food features
 FoodFeature.delete_all
 FoodFeature.reset_pk_sequence
+FoodFeature.create(name: 'All', descr: 'All')
 FoodFeature.create(name: 'Organic', descr: 'Organic')
 FoodFeature.create(name: 'Gluten Free', descr: 'Gluten Free')
 FoodFeature.create(name: 'Buy Michigan', descr: 'Buy Michigan')
