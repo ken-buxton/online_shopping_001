@@ -417,32 +417,32 @@ class StoreController < ApplicationController
         session[:sub_category] = ""
         session[:sub_category_group] = ""
         #@products = nil
-        @products = Product.where(category: session[:category]).order(:sku)
+        @products = Product.where(category: session[:category]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]}"
       elsif not params[:sub_category].blank?
         session[:sub_category] = params[:sub_category]
         session[:sub_category_group] = ""
-        @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
+        @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
       elsif not params[:sub_category_group].blank?
         session[:sub_category_group] = params[:sub_category_group]
-        @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
+        @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
   
       else
         # No changes in category, sub_category, and sub_category_group
         # Figure out what we displayed last using session category, sub_category, and sub_category_group
         if not session[:sub_category_group].blank?
-          @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:sku)
+          @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
         elsif not session[:sub_category].blank?
-          @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:sku)
+          @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
         elsif not session[:category].blank?
-          @products = Product.where(category: session[:category]).order(:sku)
+          @products = Product.where(category: session[:category]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]}"
         else
-          @products = Product.order(:sku)
+          @products = Product.order(:category, :sub_category, :sub_category_group, :sku)
         end
       end
     

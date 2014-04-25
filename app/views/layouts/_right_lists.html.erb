@@ -3,7 +3,7 @@
 
 	
 	<%= form_tag store_path, class: 'customer_shopping_list' do %>
-		<%= label_tag 'set_customer_shopping_list_name', 'Customer Shopping Lists' %>
+		<%= label_tag 'set_customer_shopping_list_name', 'Customer Shopping Lists:' %>
 		<%= select_tag 'set_customer_shopping_list_name', 
 			options_for_select(@customer_shopping_lists, @cur_shopping_list),
 			onchange: 'this.form.submit()',

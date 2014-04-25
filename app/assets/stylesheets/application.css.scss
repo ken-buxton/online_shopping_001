@@ -11,7 +11,8 @@
  *= require_self
  *= require_tree .
  */
-$tm_bgcolor:          LemonChiffon ;      // #141, White, LemonChiffon 
+
+$tm_bgcolor:          LemonChiffon ;     // #141, White, LemonChiffon 
 $tm_text:             Blue;       // #000, Navy
 
 $tm_banner_color:     Blue;       // #282
@@ -19,8 +20,8 @@ $tm_banner_bgcolor:   #B8E8F0;     // #9c9
 
 $tm_grd_top_line:     #B8E8F0;    // Khaki
 $tm_grd_hdr:          Coral;      // #afa - the Category header lines
-$tm_grd_ll_odd:       #A0A0FF;    // #afa
-$tm_grd_ll_even:      Moccasin;   // #cfc
+$tm_grd_ll_odd:       $tm_bgcolor;   // #afa - Moccasin
+$tm_grd_ll_even:      #A0A0FF;    // #cfc
 $tm_grd_btm_line:     IndianRed;  // Khaki
 
 $tm_ntc_bgcolor:      #f0f0f0;
@@ -30,8 +31,7 @@ $tm_input_fields:     #B8E8F0;    // Khaki
 $tm_table_color:      #000;
 
 $tm_item_hover_bg:    Yellow;
-
-
+$tm_line_hover:       #cccc00;
 
 html, body {
   height: 100%;
@@ -39,22 +39,13 @@ html, body {
   background: $tm_bgcolor;
 }
 
+field_set {
+  border-width: 6px;
+}
+
 input[type='button'], input[type='submit'], select {
   font-family: "Arial"; // Courier, Arial
 }
-
-
-#columns {
-  //min-height: 500%; 
-}
-      
-// html { 
-  // background: url(scratchpad2.jpg) no-repeat center center fixed; 
-  // // -webkit-background-size: cover;
-  // // -moz-background-size: cover;
-  // // -o-background-size: cover;
-  // background-size: cover;
-// }
 
 .customer {
   float: right;
@@ -81,10 +72,6 @@ input[type='button'], input[type='submit'], select {
   color: $tm_text;
 }
 
-#field_set {
-  border-width: 6px;
-}
-
 .show_product_images {
   //float: left;
   margin: -0.25em 0.1em;
@@ -96,6 +83,7 @@ input[type='button'], input[type='submit'], select {
 
 .hdr_line {
   background: $tm_grd_hdr;
+  font-size: large;
 }
 
 .bottom_line {
@@ -127,6 +115,8 @@ input[type='button'], input[type='submit'], select {
   // height: 63px;
 }
 
+.line_hover {}
+
 #banner {
   background: $tm_banner_bgcolor;
   padding: 10px;
@@ -150,6 +140,7 @@ input[type='button'], input[type='submit'], select {
 }
 
 #columns {
+  min-height: 500%; 
   background: $tm_bgcolor; // #141
   .top {
     vertical-align: top;
@@ -217,7 +208,10 @@ input[type='button'], input[type='submit'], select {
     
     table {
       margin-bottom: 5px;  
-      color: $tm_text;    
+      color: $tm_text;
+      tr:hover.line_hover {
+        background: $tm_line_hover;
+      }
       a {
         color: $tm_text;
       }
@@ -238,6 +232,9 @@ input[type='button'], input[type='submit'], select {
       table {
         margin-bottom: 5px;  
         color: $tm_text;    
+        tr:hover.line_hover {
+          background: $tm_line_hover;
+        }
         a {
           color: $tm_text;
         }

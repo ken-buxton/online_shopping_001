@@ -1,3 +1,4 @@
+	<!-- <fieldset style="border-width: 1px;"> -->
 	<fieldset style="border-width: 1px;">
 		<legend style="font-weight: bold">
 			<%= "Your Shopping Items" %>
@@ -5,15 +6,17 @@
 				<%= " (" + @cur_shopping_list + ")" %>
 			<% end %>
 		</legend>
+		
 	<% if not @customer_shopping_list_items.nil? %>
 	
 		<%= form_tag store_path, class: 'customer_shopping_list_order' do %>
-			<%= label_tag 'set_customer_shopping_list_order', 'Sort Order (click to show)'%>
+			<%= label_tag 'set_customer_shopping_list_order', 'Sort Order:'%>
 			<%= select_tag 'set_customer_shopping_list_order', 
 				options_for_select(@customer_shopping_list_orders, @cur_shopping_list_order),
 				onchange: 'this.form.submit()',
 				title: "Click to show all orders"
 			%>
+			<span style="font-size: small;">(click to show)</span>
 			<%= submit_tag 'submit' %>
 			<%= javascript_tag "$('.customer_shopping_list_order input').hide()" %>
 		<% end %>
@@ -46,13 +49,13 @@
 				<% if current_category != item['category'] %>
 					<!-- <tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %>"> -->
 					<tr class="bold hdr_line">
-						<td><%= item['category'] %></td>
+						<td class="bold hdr_line"><%= item['category'] %></td>
 						<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
 					</tr>
 					<% reset_cycle('items') %>
 					<% current_category = item['category'] %>
 				<% end %>
-				<tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %>">
+				<tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %> line_hover">
 					
 					<% this_item = item['brand'] %>
 					<% if item['brand'].size > 0 %>
