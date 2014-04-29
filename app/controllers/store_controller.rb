@@ -485,8 +485,10 @@ class StoreController < ApplicationController
     end
     logger.debug "@cur_food_feature=#{@cur_food_feature}"
 
-      
-    @shopping_header += " (#{@products.count})"
+
+    if not @products.nil?
+      @shopping_header += " (#{@products.count})"
+    end
     
     # ************************************************************
     @show_product_images = true
