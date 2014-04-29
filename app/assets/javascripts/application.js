@@ -14,3 +14,17 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+
+$(window).load(function() {
+    var h = $(window).height();
+    
+    $('#shop_list_tbl').css({'height': h - 203});
+    $('#cust_item_tbl').css({'height': h - 335});
+});
+
+$(window).resize(function() {
+	var h = $(window).height();
+    
+    $('#shop_list_tbl').css({'height': h - 203});
+    $('#cust_item_tbl').css({'height': h - 335});
+});

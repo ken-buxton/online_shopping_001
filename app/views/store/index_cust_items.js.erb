@@ -1,3 +1,8 @@
-$('#cust_list').html("<%=j render "layouts/right_lists" %>")
-$('#cust_item').html("<%=j render "layouts/right_items" %>")
-$('#right_notice').html("<%=j render "layouts/right_notice" %>")
+$('#cust_list').html("<%=j render "layouts/right_lists" %>");
+$('#cust_item').html("<%=j render "layouts/right_items" %>");
+$('#right_notice').html("<%=j render "layouts/right_notice" %>");
+
+var h = $(window).height();
+$('#shop_list_tbl').css({'height': h - 203});
+$('#cust_item_tbl').css({'height': h - 335});
+
