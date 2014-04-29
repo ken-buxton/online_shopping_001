@@ -1,12 +1,17 @@
 	<td class="top">
-	<div id="lside">
+	<div id="lside", style="padding: 1em; margin: 7px; border: 1px solid blue">
 
-	<%= render 'layouts/left_search' %>
-	<br>
+	<!-- <fieldset style="border-width: 1px;">
+		<legend style="font-weight: bold">Shopping Item Selection</legend> -->
+			
+		<%= render 'layouts/left_search' %>
+		<br>
+		
+		<%= render 'layouts/left_food_features' %>
+		<br>
 	
-	<%= render 'layouts/left_food_features' %>
-	<br>
-
-	<%= render 'layouts/left_items' %>
+		<%= render 'layouts/left_items' %>
+	<!-- </fieldset> -->
+	
 	</div>
 	</td>

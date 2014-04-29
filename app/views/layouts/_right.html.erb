@@ -1,13 +1,11 @@
 	<td class="top">
 	<div id="rside">
-		<% if notice %>
-			<p id="notice"><%= notice%></p>
-		<% end %>
+		<%= render 'layouts/right_notice' %>
 
 		<%= render 'layouts/right_lists' %>
 		<br>		
 
 		<%= render 'layouts/right_items' %>
-		
+
 	</div>
 	</td>

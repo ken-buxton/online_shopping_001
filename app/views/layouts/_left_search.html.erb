@@ -1,12 +1,17 @@
-	<%= form_tag store_path do %>
+	<div id="left_search">
+	<%= form_tag store_path, remote: true do %>
 		<!-- <%= label_tag 'search_value', 'Search:'%> -->
-		<%= search_field_tag 'search_value', @search_value, class: "search_value", placeholder: "Search...", style: "width: 130px",
-			title: "Search value" %>
+		<%= search_field_tag 'search_value', @search_value, 
+			class: "search_value", 
+			placeholder: "Search...", 
+			style: "width: 130px",
+			title: "Search value", data: {remote: true, url: "/store/index" } %>
 		<br>
 		<%= submit_tag "Search", controller: "store",
 			title: "Press this button to search using the current search value", 
 			class: "button_font"  %>
-		<%= submit_tag "Clear", controller: "store", 
+		<%= submit_tag "Clear", controller: "store",
 			title: "Press this button to clear the current search value", 
-			class: "button_font"  %>
+			class: "button_font" %>
 	<% end %>
+	</div>

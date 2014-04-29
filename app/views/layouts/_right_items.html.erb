@@ -1,27 +1,30 @@
-	<!-- <fieldset style="border-width: 1px;"> -->
+	<div id="cust_item">
+
 	<fieldset style="border-width: 1px;">
-		<legend style="font-weight: bold">
-			<%= "Your Shopping Items" %>
-			<% if not @cur_shopping_list.blank? %>
-				<%= " (" + @cur_shopping_list + ")" %>
-			<% end %>
-		</legend>
-		
+	<legend style="font-weight: bold">
+		<%= "Your Shopping List Items" %>
+		<% if not @cur_shopping_list.blank? %>
+			<%= " (" + @cur_shopping_list + ")" %>
+		<% end %>
+	</legend>
+
 	<% if not @customer_shopping_list_items.nil? %>
 	
-		<%= form_tag store_path, class: 'customer_shopping_list_order' do %>
+		<%= form_tag store_path, remote: true, class: 'customer_shopping_list_order' do %>
 			<%= label_tag 'set_customer_shopping_list_order', 'Sort Order:'%>
 			<%= select_tag 'set_customer_shopping_list_order', 
 				options_for_select(@customer_shopping_list_orders, @cur_shopping_list_order),
-				onchange: 'this.form.submit()',
-				title: "Click to show all orders"
+				# onchange: 'this.form.submit()',
+				title: "Click to show all orders",
+				data: {remote: true, url: "/store/index" }
 			%>
 			<span style="font-size: small;">(click to show)</span>
-			<%= submit_tag 'submit' %>
-			<%= javascript_tag "$('.customer_shopping_list_order input').hide()" %>
+			<!-- <%= submit_tag 'submit' %>
+			<%= javascript_tag "$('.customer_shopping_list_order input').hide()" %> -->
 		<% end %>
 		<br>
 		
+		<div style="height: 544px; overflow: auto;">
 		<table>
 			<tr class="top_line">
 				<th>Brand - Description (Quantity)</th>
@@ -82,14 +85,15 @@
 											
 					<td class="right_justify">
 						<% set_change_qty_x = 'set_change_qty_' + item['id'].to_s %>
-						<%= form_tag store_path, class: set_change_qty_x do %>
+						<%= form_tag store_path, remote: true, class: set_change_qty_x do %>
 							<span>
 							<%= number_field_tag set_change_qty_x, item['quantity'].to_f, in: 0.1..10,
 								class: "qty_update",
-								onchange: 'this.form.submit()'
+								data: {remote: true, url: "/store/index" }
+								# onchange: 'this.form.submit()'
 							%>
-							<%= submit_tag "Change Qty", controller: "store", class: 'submit_only' %>
-							<%= javascript_tag "$('.#{set_change_qty_x} .submit_only').hide()" %>
+							<!-- <%= submit_tag "Change Qty", controller: "store", class: 'submit_only' %>
+							<%= javascript_tag "$('.#{set_change_qty_x} .submit_only').hide()" %> -->
 							</span>
 						<% end %>
 					</td>					
@@ -98,13 +102,14 @@
 					
 					<td>
 						<% set_change_note_x = 'set_change_note_' + item['id'].to_s %>
-						<%= form_tag store_path, class: set_change_note_x do %>
+						<%= form_tag store_path, remote: true, class: set_change_note_x do %>
 							<span>
 							<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em",
-								onchange: 'this.form.submit()'
+								data: {remote: true, url: "/store/index" }
+								# onchange: 'this.form.submit()'
 						 	%>
-							<%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
-							<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %>
+							<!-- <%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
+							<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %> -->
 							</span>
 						<% end %>
 					</td>					
@@ -112,7 +117,8 @@
 					<td style="width: 3em;">
 						<% del_conf_msg = "Are you sure you want to delete '#{this_item_title}' from your shopping list?" %>
 						<%= link_to "Delete", {controller: "store", delete_from_list: item['id']}, 
-							data: {confirm: del_conf_msg}, method: :delete
+							data: {confirm: del_conf_msg}, method: :delete,
+							remote: true
 						%>
 					</td>
 				</tr>
@@ -128,6 +134,8 @@
 				<td></td>
 				<td></td>
 			</tr>				
-		</table>				
+		</table>
+		</div>		
 	<% end %>
 	</fieldset>
+	</div>

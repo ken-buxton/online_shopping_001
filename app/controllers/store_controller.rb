@@ -1,8 +1,5 @@
 class StoreController < ApplicationController
   
-  def dummy
-  end
-  
   def index
     # Parameter variables: :set_customer_email, :set_customer_shopping_list_name, :add_to_list, :delete_from_list, :commit, :shopping_list_name,
     #   :category, :sub_category, :sub_category_group
@@ -22,10 +19,15 @@ class StoreController < ApplicationController
         session[session_var] = ""
       end
     end
+
+    # not sure why this is needed. It seems otherwise that the :notice is persisted longer than desired
+    # (an Ajax issue?)
+    flash[:notice] = nil
     
-    if session[:show_product_images] == ""
-      session[:show_product_images] == "yes"
-    end
+    # Things seem to still work with this code commented out. Leave here for now just in case.
+    # if session[:show_product_images] == ""
+      # session[:show_product_images] == "yes"
+    # end
     
     customer_shopping_list_orders = ["*Category/Sub-category/Sub-category Group",
       "Price - Ascending", "Price - Descending", 
@@ -35,8 +37,8 @@ class StoreController < ApplicationController
     if session[:customer_shopping_list_order] == ""
       session[:customer_shopping_list_order] == customer_shopping_list_orders[0]
     end
-
-    #logger.debug "request=#{request.inspect}"
+    
+    index_render_method = ""
 
     # ************************************************************
     # Handle changes to the current customer or 
@@ -64,18 +66,21 @@ class StoreController < ApplicationController
       end
       
     elsif not params[:set_customer_shopping_list_name].nil?
+      index_render_method = "index_cust_items"
       logger.debug ":set_customer_shopping_list_name"
       # Changed current shopping list
       # Update to new shopping list
       session[:customer_shopping_list_name] = params[:set_customer_shopping_list_name]
       
     elsif not params[:set_customer_shopping_list_order].nil?
+      index_render_method = "index_cust_items"
       logger.debug ":set_customer_shopping_list_order"
       # Changed current shopping list
       # Update to new shopping list
       session[:customer_shopping_list_order] = params[:set_customer_shopping_list_order]
       
     elsif not params[:set_food_feature].nil?
+      index_render_method = "index_shop_items"
       logger.debug ":set_food_feature"
       # Changed current shopping list
       # Update to new shopping list
@@ -85,6 +90,7 @@ class StoreController < ApplicationController
       end
       
     elsif not params[:set_show_product_images_hidden].nil?
+      index_render_method = "index_shop_items"
       logger.debug ":set_show_product_images_hidden"
       # check_box_tag will not send back a value parameter if 
       # Changed display product image
@@ -120,6 +126,7 @@ class StoreController < ApplicationController
       end
           
     elsif not params[:remove_from_my_items].nil?
+      index_render_method = "index_shop_items"
       logger.debug ":remove_from_my_items"
       # Added an item to the current shopping list
       product_id = params[:remove_from_my_items]      
@@ -134,6 +141,7 @@ class StoreController < ApplicationController
       end
           
     elsif not params[:add_to_list].nil?
+      index_render_method = "index_cust_items"
       logger.debug ":add_to_list"
       # Added an item to the current shopping list
       product_id = params[:add_to_list]      
@@ -153,6 +161,7 @@ class StoreController < ApplicationController
       end
           
     elsif not params[:delete_from_list].nil?
+      index_render_method = "index_cust_items"
       logger.debug ":delete_from_list"
       # Added an item to the current shopping list
       product_id = params[:delete_from_list]
@@ -165,45 +174,54 @@ class StoreController < ApplicationController
           item.destroy
         end
       end
-      
+    
+    # elsif any forms that returned a commit parameter (buttons)
     elsif not params[:commit].nil?
-      logger.debug ":commit=#{params[:commit]}"
+      
       if params[:commit] == "Create"
+        index_render_method = "index_cust_items"
         if not params[:shopping_list_name].blank?
           customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], params[:shopping_list_name])
           if not customer_id.nil? and not customer_shopping_list.nil?
-            redirect_to store_path, notice: "Shopping list '#{params[:shopping_list_name]}' already exists."
+            flash[:notice] = "Can't create shopping list '#{params[:shopping_list_name]}' because it already exists."
           else
             session[:customer_shopping_list_name] = params[:shopping_list_name]
             CustomerShoppingList.create(customer_id: customer_id, shopping_list_name: session[:customer_shopping_list_name])
           end
         else
-          redirect_to store_path, notice: "No name given for new shopping list."
+          flash[:notice] = "Can't create a new shopping list because a name was not supplied."
         end
         
       elsif params[:commit] == "Rename"
-        customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
-        if not customer_id.nil? and not customer_shopping_list.nil?
-          if session[:customer_shopping_list_name] == params[:shopping_list_name]
-            redirect_to store_path, notice: "No change in shopping list name."
-          else
-            if CustomerShoppingList.where(shopping_list_name: params[:shopping_list_name]).count > 0
-              redirect_to store_path, notice: "Can't rename to #{params[:shopping_list_name]} - that name is already used."
+        index_render_method = "index_cust_items"
+        if not params[:shopping_list_name].blank?
+          customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
+          if not customer_id.nil? and not customer_shopping_list.nil?
+            if session[:customer_shopping_list_name] == params[:shopping_list_name]
+              flash[:notice] = "Can't rename shopping list '#{params[:shopping_list_name]}' because there was no change in the shopping list name."
             else
-              customer_shopping_list.shopping_list_name = params[:shopping_list_name]
-              customer_shopping_list.save
-              session[:customer_shopping_list_name] = params[:shopping_list_name]
+              if CustomerShoppingList.where(shopping_list_name: params[:shopping_list_name]).count > 0
+                flash[:notice] = "Can't rename shopping list '#{session[:customer_shopping_list_name]}' to '#{params[:shopping_list_name]}' because that name is already used."
+              else
+                customer_shopping_list.shopping_list_name = params[:shopping_list_name]
+                customer_shopping_list.save
+                session[:customer_shopping_list_name] = params[:shopping_list_name]
+              end
             end
+          else
+            # this should never occur
+            flash[:notice] = "Can't rename the shopping list '#{session[:customer_shopping_list_name]}' because it does not exist."
           end
         else
-          redirect_to store_path, notice: "Nothing to rename."
+          flash[:notice] = "Can't rename the shopping list '#{session[:customer_shopping_list_name]}' because a new name was not supplied."
         end
         
       elsif params[:commit] == "Copy"
+        index_render_method = "index_cust_items"
         if not params[:shopping_list_name].blank?
           customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], params[:shopping_list_name])
           if not customer_id.nil? and not customer_shopping_list.nil?
-            redirect_to store_path, notice: "Copy to shopping list '#{session[:customer_shopping_list_name]}' already exists."
+            flash[:notice] = "Can't copy to shopping list '#{session[:customer_shopping_list_name]}' because it already exists."
           else
             # Create the shopping list
             new_shopping_list_id = CustomerShoppingList.create(customer_id: customer_id, shopping_list_name: params[:shopping_list_name]).id
@@ -218,18 +236,19 @@ class StoreController < ApplicationController
             end
           end
         else
-          redirect_to store_path, notice: "No name given for copied shopping list."
-        end
+          flash[:notice] = "Can't copy from '#{session[:customer_shopping_list_name]}' because a name to copy to was not supplied ."
+       end
         
       elsif params[:commit] == "Merge"
+        index_render_method = "index_cust_items"
         if not params[:shopping_list_name].blank?
-          if params[:shopping_list_name] ==session[:customer_shopping_list_name]
-            redirect_to store_path, notice: "Can't merge a shopping list into itself."
-          else
+          if params[:shopping_list_name] == session[:customer_shopping_list_name]
+            flash[:notice] = "Can't merge from '#{session[:customer_shopping_list_name]}' because a different name to merge to was not supplied ."
+         else
             # Get the merge to shopping list info
             merge_to_customer_id, merge_to_customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], params[:shopping_list_name])
             if merge_to_customer_id.nil? or merge_to_customer_shopping_list.nil?
-              redirect_to store_path, notice: "Merge to shopping list '#{params[:shopping_list_name]}' must already exist."
+              flash[:notice] = "Can't merge to shopping list '#{params[:shopping_list_name]}' because it must already exist (try copy)."
             else
               # Get the merge from shopping list info
               merge_from_customer_id, merge_from_customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
@@ -253,15 +272,16 @@ class StoreController < ApplicationController
                 CustomerShoppingList.where(id: merge_from_customer_shopping_list.id).first.destroy
                 session[:customer_shopping_list_name] = params[:shopping_list_name]
               else
-                redirect_to store_path, notice: "Merge from shopping list '#{session[:customer_shopping_list_name]}' must already exist."
+                flash[:notice] = "Can't merge from shopping list '#{session[:customer_shopping_list_name]}' because it must already exist."
               end
             end
           end
         else
-          redirect_to store_path, notice: "No name given for merged shopping list."
+          flash[:notice] = "Can't merge from '#{session[:customer_shopping_list_name]}' because a name to merge to was not supplied .."
         end
         
       elsif params[:commit] == "Delete"
+        index_render_method = "index_cust_items"
         session[:customer_shopping_list_name] = params[:shopping_list_name]
         customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
         if not customer_id.nil? and not customer_shopping_list.nil?
@@ -271,59 +291,27 @@ class StoreController < ApplicationController
             session[:customer_shopping_list_name] = customer_shopping_list.shopping_list_name
           end
         else
-          redirect_to store_path, notice: "Nothing to delete."
+          flash[:notice] = "Can't delete '#{params[:shopping_list_name]} because it does not exist."
         end
-        
-      # elsif params[:commit] == "Change Qty"
-        # params.each do |key, new_value|
-          # if key =~ /^set_change_qty_/
-            # product_id = key["set_change_qty_".size..-1].to_i
-#             
-            # customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
-            # if not customer_id.nil? and not customer_shopping_list.nil?
-              # # If item already exists, add a count of 1 to current count
-              # if CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).count > 0
-                # item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
-                # item.quantity = new_value
-                # item.save
-              # end
-            # end            
-          # end
-        # end
-#         
-      # elsif params[:commit] == "Change Note"
-        # params.each do |key, new_value|
-          # if key =~ /^set_change_note_/
-            # product_id = key["set_change_note_".size..-1].to_i
-            # logger.debug "product_id=#{product_id}"
-#             
-            # customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
-            # if not customer_id.nil? and not customer_shopping_list.nil?
-              # # If item already exists, add a count of 1 to current count
-              # if CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).count > 0
-                # item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
-                # item.note = new_value
-                # item.save
-              # end
-            # end            
-          # end
-        # end
-        
+                
       elsif params[:commit] == "Search"
+        index_render_method = "index_shop_items"
         session[:search_value] = params[:search_value]
       elsif params[:commit] == "Clear"
+        index_render_method = "index_shop_items"
         session[:search_value] = ""
                 
       end
 
+    # elsif not params[:commit].nil?
     else  # no static params - try the variable params
-      logger.debug "No static params changes - check for: set_change_qty_xxx and set_change_note_xxx"
-      # check for Change Qty
+      # Check for any parameters returned to change qty values
       params.each do |key, new_value|
         if key =~ /^set_change_qty_/
+          index_render_method = "index_cust_items"
           product_id = key["set_change_qty_".size..-1].to_i
           logger.debug "param_key=#{key}, product_id=#{product_id}"
-          
+      
           customer_id, customer_shopping_list = get_named_customer_shopping_info(session[:customer_email], session[:customer_shopping_list_name])
           if not customer_id.nil? and not customer_shopping_list.nil?
             # If item already exists, add a count of 1 to current count
@@ -336,8 +324,10 @@ class StoreController < ApplicationController
         end
       end
       
+      # Check for any parameters returned to change note values
       params.each do |key, new_value|
         if key =~ /^set_change_note_/
+          index_render_method = "index_cust_items"
           product_id = key["set_change_note_".size..-1].to_i
           logger.debug "param_key=#{key}, product_id=#{product_id}"
           
@@ -349,9 +339,11 @@ class StoreController < ApplicationController
               item.note = new_value
               item.save
             end
-          end            
-        end
-      end
+          end   # if not customer_id.nil? and
+        end     # if key =~
+      end       # params.each do
+      
+    # elsif not params[:commit].nil?
     end
 
     
@@ -385,6 +377,7 @@ class StoreController < ApplicationController
     @top_levels = ["My Items", "Sale Items", "Featured Items", "All Items"]
     logger.debug "params[:top_level]=#{params[:top_level]}"
     if not params[:top_level].blank?
+      index_render_method = "index_shop_items"
       session[:top_level] = params[:top_level]
       session[:category] = ""
       session[:sub_category] = ""
@@ -413,21 +406,27 @@ class StoreController < ApplicationController
       # Check for a change in category, sub_category, and sub_category_group. We'll only get one.
       # Pull products for new situation
       if not params[:category].blank?
+        index_render_method = "index_shop_items"
         session[:category] = params[:category]
         session[:sub_category] = ""
         session[:sub_category_group] = ""
         #@products = nil
         @products = Product.where(category: session[:category]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]}"
+        logger.debug "Product 1"
       elsif not params[:sub_category].blank?
+        index_render_method = "index_shop_items"
         session[:sub_category] = params[:sub_category]
         session[:sub_category_group] = ""
         @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
+        logger.debug "Product 2"
       elsif not params[:sub_category_group].blank?
+        index_render_method = "index_shop_items"
         session[:sub_category_group] = params[:sub_category_group]
         @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
+        logger.debug "Product 3"
   
       else
         # No changes in category, sub_category, and sub_category_group
@@ -435,14 +434,18 @@ class StoreController < ApplicationController
         if not session[:sub_category_group].blank?
           @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
+          logger.debug "Product 4"
         elsif not session[:sub_category].blank?
           @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
+          logger.debug "Product 5"
         elsif not session[:category].blank?
           @products = Product.where(category: session[:category]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]}"
+          logger.debug "Product 6"
         else
           @products = Product.order(:category, :sub_category, :sub_category_group, :sku)
+          logger.debug "Product 7"
         end
       end
     
@@ -480,6 +483,10 @@ class StoreController < ApplicationController
     if @cur_food_feature != ""
       @products = @products.where("food_feature = '#{@cur_food_feature}'")      
     end
+    logger.debug "@cur_food_feature=#{@cur_food_feature}"
+
+      
+    @shopping_header += " (#{@products.count})"
     
     # ************************************************************
     @show_product_images = true
@@ -537,6 +544,16 @@ class StoreController < ApplicationController
              inner join products P on CSLI.product_id = P.id
            where CSLI.customer_shopping_list_id = #{customer_shopping_list_id} #{csl_order_by} "
         )
+      end
+    end
+    
+    # index_render_method = "index_cust_items"
+    logger.debug "index_render_method=#{index_render_method}"
+    respond_to do |format|
+      if not index_render_method.blank?
+        format.js { render index_render_method }
+      else
+        format.html 
       end
     end
 

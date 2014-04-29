@@ -1,4 +1,5 @@
 OnlineShopping001::Application.routes.draw do
+  get "ken/list"
   match "store/index", via: [:get, :post, :delete]
   root to: 'store#index', as: 'store', via: [:get, :post]
 

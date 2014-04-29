@@ -1,21 +1,23 @@
+	<div id="cust_list">
 	<fieldset style="border-width: 1px;"> 
 	<legend style="font-weight: bold">Your Shopping Lists</legend>
 
 	
-	<%= form_tag store_path, class: 'customer_shopping_list' do %>
+	<%= form_tag store_path, remote: true, class: 'customer_shopping_list' do %>
 		<%= label_tag 'set_customer_shopping_list_name', 'Customer Shopping Lists:' %>
 		<%= select_tag 'set_customer_shopping_list_name', 
 			options_for_select(@customer_shopping_lists, @cur_shopping_list),
-			onchange: 'this.form.submit()',
-			title: "Click to show all shopping lists"
+			# onchange: 'this.form.submit()',
+			title: "Click to show all shopping lists",
+			data: {remote: true, url: "/store/index" }
 		%>
 		<span style="font-size: small;">(click to show)</span>
-		<%= submit_tag 'submit' %>
-		<%= javascript_tag "$('.customer_shopping_list input').hide()" %>
+		<!-- <%= submit_tag 'submit' %>
+		<%= javascript_tag "$('.customer_shopping_list input').hide()" %> -->
 	<% end %>
 	<br>
 	
-	<%= form_tag store_path, class: 'shopping_list_name' do %>
+	<%= form_tag store_path, remote: true, class: 'shopping_list_name' do %>
 		<%= label_tag 'shopping_list_name', 'Shopping List Name:'%>
 		<span style="margin-left: 10px;"></span>
 		<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text", 
@@ -39,3 +41,4 @@
 			title: "Press this button to delete the current shopping list"  %>
 	<% end %>
 	</fieldset>
+	</div>
