@@ -1,10 +1,11 @@
-$('#shop_list').html("<%=j render "layouts/main_items" %>")
-$('#left_search').html("<%=j render "layouts/left_search" %>")
-$('#left_food_feature').html("<%=j render "layouts/left_food_features" %>")
-$('#left_items').html("<%=j render "layouts/left_items" %>")
-$('#right_notice').html("<%=j render "layouts/right_notice" %>")
-
+$('#shop_list').html("<%=j render "layouts/main_items" %>");
+$('#left_search').html("<%=j render "layouts/left_search" %>");
+$('#left_food_feature').html("<%=j render "layouts/left_food_features" %>");
+$('#left_items').html("<%=j render "layouts/left_items" %>");
 
 var h = $(window).height();
 $('#shop_list_tbl').css({'height': h - 203});
 $('#cust_item_tbl').css({'height': h - 335});
+
+$('#left_notice').html("<%=j render "layouts/left_notice" %>");
+$('#notice').css({'background-color':'#0000ff'}).animate({'background-color':'#ffff00'}, 300);

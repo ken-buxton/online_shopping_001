@@ -9,6 +9,7 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+ *= require jquery.ui.all
  *= require_tree .
  */
 
@@ -30,8 +31,8 @@ $tm_ntc_bdrcolor:     Red;
 $tm_input_fields:     #B8E8F0;    // Khaki
 $tm_table_color:      #000;
 
-$tm_item_hover_bg:    Yellow;
-$tm_line_hover:       #cccc00;
+$tm_item_hover_bg:    #00ff00;
+$tm_line_hover:       Yellow;
 
 html, body {
   height: 100%;
@@ -115,6 +116,14 @@ input[type='button'], input[type='submit'], select {
   // height: 63px;
 }
 
+.medium_margin {
+  margin-bottom: 35px;
+}
+
+.small_margin {
+  margin-bottom: 5px;
+}
+
 .line_hover {}
 
 #banner {
@@ -131,9 +140,11 @@ input[type='button'], input[type='submit'], select {
 }
 
 #notice {
+  width: 180px;
   color: #000 !important;
   border: 2px solid $tm_ntc_bdrcolor;
   padding: 1em;
+  margin-left: 1em;
   margin-bottom: 2em;
   background-color: $tm_ntc_bgcolor;
   font: bold smaller sans-serif;
@@ -163,9 +174,10 @@ input[type='button'], input[type='submit'], select {
   }
   
   #lside {
-    width: 200px;
+    width: 180px;
     color: $tm_text;    // #bfb
     ul {
+
       padding: 0;
       li {
         list-style: none;
