@@ -12,7 +12,7 @@ class StoreController < ApplicationController
       :customer_shopping_list_name, :customer_email,
       :customer_shopping_list_order, 
       :show_product_images, :show_category_info, 
-      :search_value, :food_feature
+      :search_value, :food_feature, :cur_cust_item
     ]
     session_vars.each do |session_var|
       if session[session_var].nil?
@@ -38,7 +38,7 @@ class StoreController < ApplicationController
       session[:customer_shopping_list_order] == customer_shopping_list_orders[0]
     end
     
-    @cur_cust_item = ""
+    @cur_cust_item = session[:cur_cust_item]
     index_render_method = ""
 
     # ************************************************************
@@ -154,13 +154,13 @@ class StoreController < ApplicationController
           item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
           item.quantity += 1
           item.save
-          @cur_cust_item = "#cust_item_" +item.product_id.to_s
+          @cur_cust_item = "#cust_item_" + item.product_id.to_s
           logger.debug "@cur_cust_item=#{@cur_cust_item}"
         # else, add a new item with a count of 1
         else
           item = CustomerShoppingListItem.create(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id, 
             quantity: 1, note: "")
-          @cur_cust_item = "#cust_item_" +item.product_id.to_s
+          @cur_cust_item = "#cust_item_" + item.product_id.to_s
           logger.debug "@cur_cust_item=#{@cur_cust_item}"
         end
       end
@@ -539,13 +539,15 @@ class StoreController < ApplicationController
           csl_order_by = ""
         end
         @customer_shopping_list_items = conn.select_all(
-          "select P.*, CSLI.quantity, CSLI.note
+          "select P.*, P.id as product_id, 
+            CSLI.quantity, CSLI.note
            from customer_shopping_list_items CSLI
              inner join products P on CSLI.product_id = P.id
            where CSLI.customer_shopping_list_id = #{customer_shopping_list_id} #{csl_order_by} "
         )
       end
     end
+    session[:cur_cust_item] = @cur_cust_item
     
     # index_render_method = "index_cust_items"
     logger.debug "index_render_method=#{index_render_method}"
