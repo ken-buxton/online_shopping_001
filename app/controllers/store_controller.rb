@@ -38,6 +38,7 @@ class StoreController < ApplicationController
       session[:customer_shopping_list_order] == customer_shopping_list_orders[0]
     end
     
+    @cur_cust_item = ""
     index_render_method = ""
 
     # ************************************************************
@@ -153,10 +154,14 @@ class StoreController < ApplicationController
           item = CustomerShoppingListItem.where(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id).first
           item.quantity += 1
           item.save
+          @cur_cust_item = "#cust_item_" +item.product_id.to_s
+          logger.debug "@cur_cust_item=#{@cur_cust_item}"
         # else, add a new item with a count of 1
         else
-          CustomerShoppingListItem.create(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id, 
+          item = CustomerShoppingListItem.create(customer_shopping_list_id: customer_shopping_list.id, product_id: product_id, 
             quantity: 1, note: "")
+          @cur_cust_item = "#cust_item_" +item.product_id.to_s
+          logger.debug "@cur_cust_item=#{@cur_cust_item}"
         end
       end
           
@@ -413,20 +418,17 @@ class StoreController < ApplicationController
         #@products = nil
         @products = Product.where(category: session[:category]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]}"
-        logger.debug "Product 1"
       elsif not params[:sub_category].blank?
         index_render_method = "index_shop_items"
         session[:sub_category] = params[:sub_category]
         session[:sub_category_group] = ""
         @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
-        logger.debug "Product 2"
       elsif not params[:sub_category_group].blank?
         index_render_method = "index_shop_items"
         session[:sub_category_group] = params[:sub_category_group]
         @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:category, :sub_category, :sub_category_group, :sku)
         @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
-        logger.debug "Product 3"
   
       else
         # No changes in category, sub_category, and sub_category_group
@@ -434,18 +436,14 @@ class StoreController < ApplicationController
         if not session[:sub_category_group].blank?
           @products = Product.where(category: session[:category], sub_category: session[:sub_category], sub_category_group: session[:sub_category_group]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]} > #{session[:sub_category]} > #{session[:sub_category_group]}"
-          logger.debug "Product 4"
         elsif not session[:sub_category].blank?
           @products = Product.where(category: session[:category], sub_category: session[:sub_category]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]} > #{session[:sub_category]}"
-          logger.debug "Product 5"
         elsif not session[:category].blank?
           @products = Product.where(category: session[:category]).order(:category, :sub_category, :sub_category_group, :sku)
           @shopping_header += " > #{session[:category]}"
-          logger.debug "Product 6"
         else
           @products = Product.order(:category, :sub_category, :sub_category_group, :sku)
-          logger.debug "Product 7"
         end
       end
     

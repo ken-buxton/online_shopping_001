@@ -7,3 +7,8 @@ $('#cust_item_tbl').css({'height': h - 335});
 
 $('#left_notice').html("<%=j render "layouts/left_notice" %>");
 $('#notice').css({'background-color':'#0000ff'}).animate({'background-color':'#ffff00'}, 300);
+
+var cur_product = "<%= @cur_cust_item %>"
+if (cur_product.length > 0 ) {
+	$(cur_product)[0].scrollIntoView(false);
+}

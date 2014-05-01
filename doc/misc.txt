@@ -1,0 +1,9 @@
+<!-- var cur_product = "<%=j render "layouts/right_cur" %>"
+if (cur_product.length > 0 ) {
+	$(cur_product).scrollIntoView();
+} -->
+
+<!-- <% if not @cur_cust_item.nil? %>
+	<%= '#cust_item_' + @cur_cust_item.to_s %>
+<% end %> -->
+
