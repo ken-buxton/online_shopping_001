@@ -13,20 +13,21 @@
  *= require_tree .
  */
 
-$tm_bgcolor:          White;     // #141, White, LemonChiffon 
-$tm_text:             Blue;       // #000, Navy
+$tm_bgcolor:            White;     // #141, White, LemonChiffon 
+$tm_text:               Blue;       // #000, Navy
 
-$tm_banner_color:     Blue;       // #282
-$tm_banner_bgcolor:   #B8E8F0;     // #9c9
+$tm_banner_color:       White;       // #282
+$tm_banner_bgcolor:     Blue;     // #9c9
 
-$tm_grd_top_line:     #B8E8F0;    // Khaki
-$tm_grd_hdr:          Coral;      // #afa - the Category header lines
-$tm_grd_ll_odd:       $tm_bgcolor;   // #afa - Moccasin
-$tm_grd_ll_even:      #A0A0FF;    // #cfc
-$tm_grd_btm_line:     IndianRed;  // Khaki
+$tm_grd_top_line:       Blue;    // Khaki
+$tm_grd_top_line_text:  White;    // Khaki
+$tm_grd_hdr:            Coral;      // #afa - the Category header lines
+$tm_grd_ll_odd:         $tm_bgcolor;   // #afa - Moccasin
+$tm_grd_ll_even:        #A0A0FF;    // #cfc
+$tm_grd_btm_line:       IndianRed;  // Khaki
 
 $tm_ntc_bgcolor:      #f0f0f0;
-$tm_ntc_bdrcolor:     Red;
+$tm_ntc_bdrcolor:     Blue;
 
 $tm_input_fields:     #B8E8F0;    // Khaki
 $tm_table_color:      #000;
@@ -80,6 +81,7 @@ input[type='button'], input[type='submit'], select {
 
 .top_line {
   background: $tm_grd_top_line;
+  color: $tm_grd_top_line_text;
 }
 
 .hdr_line {
@@ -140,11 +142,11 @@ input[type='button'], input[type='submit'], select {
 }
 
 #notice {
-  width: 180px;
+  width: 186px;
   color: #000 !important;
   border: 2px solid $tm_ntc_bdrcolor;
   padding: 1em;
-  margin-left: 1em;
+  margin-left: 7px;
   margin-bottom: 2em;
   background-color: $tm_ntc_bgcolor;
   font: bold smaller sans-serif;
@@ -174,6 +176,7 @@ input[type='button'], input[type='submit'], select {
   }
   
   #lside {
+    margin-left: 1em;
     width: 180px;
     color: $tm_text;    // #bfb
     ul {
