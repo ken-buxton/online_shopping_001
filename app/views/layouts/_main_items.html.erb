@@ -73,9 +73,10 @@
 		
 			<tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'products') %> line_hover">
 				<% if @show_product_images %>
-					<td><%= image_tag(product.image, class: 'list_image') %></td>
+					<td style="padding-left: 10px;"><%= image_tag(product.image, class: 'list_image') %></td>
 				<% end %>
-				<td style="width: 3em;"><%= link_to "(+) List", controller: "store", add_to_list: product.id, remote: true %></td>
+				<td style="width: 3em;"><%= link_to "(+) List", {controller: "store", add_to_list: product.id}, 
+					title: "Add this item to my current shopping list", remote: true %></td>
 				
 				<% this_item = product.brand %>
 				<% if product.brand.size > 0 %>
@@ -100,14 +101,16 @@
 				<td><%= product.uofm %></td>
 				
 				<% if @cur_top_level == "My Items" %>
-					<% del_conf_msg = "Are you sure you want to remove '#{this_item_title}' from your items?" %>
+					<% del_conf_msg = "Are you sure you want to remove '#{this_item_title}' from your 'My Items' list?" %>
 					<td style="width: 3em;">
 					<%= link_to "(-) My Items", {controller: "store", remove_from_my_items: product.id}, 
-						data: {confirm: del_conf_msg}, method: :delete, remote: true
+						data: {confirm: del_conf_msg}, method: :delete, title: "Remove this item from my 'My Items' list?", 
+						remote: true
 					%>
 					</td>
 				<% else %>
-					<td style="width: 3em;"><%= link_to "(+) My Items", controller: "store", add_to_my_items: product.id, remote: true %></td>
+					<td style="width: 3em;"><%= link_to "(+) My Items", {controller: "store", add_to_my_items: product.id}, 
+					title: "Add this item to my 'My Items' list", remote: true  %></td>
 				<% end %>
 				
 			</tr>

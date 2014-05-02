@@ -93,7 +93,7 @@ prod_create('10000020103', '10000020103', '',                     'Bulk Mix - Co
 # ***** Sub-category: Fruit ***********************
 prod_create('10000020201', '10000020201', '',                     'Apples - Fuji',                       'per lb',   0.5,            'prod/PrFr01.jpg', 'Produce',  'Fruit',       'Apples',           '',              'lb',      1.99,    1.99,      false,    false)
 prod_create('10000020202', '10000020202', 'Dole',                 'Bananas',                             'per lb',   0.4,            'prod/PrFr02.jpg', 'Produce',  'Fruit',       'Bananas',          '',              'lb',      0.59,    0.59,      false,    true)
-prod_create('10000020203', '10000020203', '',                     'Mangos',                              '1 ea',     0.0,            'prod/PrFr03.jpg', 'Produce',  'Fruit',       '',                 '',              'each',    1.00,    1.00,      true,     false)
+prod_create('10000020203', '10000020203', '',                     'Mangos',                              '1 ea',     0.0,            'prod/PrFr03.jpg', 'Produce',  'Fruit',       'Fruit',            '',              'each',    1.00,    1.00,      true,     false)
 # ***** Sub-category: Vegetables ******************
 prod_create('10000020301', '10000020301', '',                     'Beans - Green',                       'per lb',   0.0,            'prod/PrVe01.jpg', 'Produce',  'Vegetables',  'Raw',              'High Fiber',    'lb',      1.29,    1.29,      true,     false)
 prod_create('10000020302', '10000020302', 'Busch\'s',             'Fresh Salsa',                         '12 oz',    0.0,            'prod/PrVe02.jpg', 'Produce',  'Vegetables',  'Made',             'High Fiber',    'each',    2.99,    2.99,      true,     true)
