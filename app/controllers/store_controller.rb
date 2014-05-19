@@ -1,12 +1,43 @@
 class StoreController < ApplicationController
+  # *************************************************************************************************
+  # Page layout. The page is divided into three primary columns:
+  # *************************************************************************************************
+  #   1) Item view selection (left column) - this column of allows the user to select the items they
+  #      want to view.
+  #   2) Item view (middle column) - this column shows the currently requested set of items for the
+  #      user to shop from.
+  #   3) Shopping list selector and current shopping items (right column)
+  # 
+  # Item view selection column:
+  #   Details of controls
+  # 
+  # Item view column:
+  #   Details of controls
+  # 
+  # Shopping list selector and current shopping items column:
+  # 
   
   def index
+    # *************************************************************************************************
+    # Program layout. The "index" method of StoreController
+    # *************************************************************************************************
+    # 100.01) Initialization
+    # 200.01) Handle changes to various controls on the store page
+    # 300.01) Build required data structures for view processingt
+    # 400.01) Response processing - based on value in index_render_method
+    # 
+    # 
+   
+    
     # Parameter variables: :set_customer_email, :set_customer_shopping_list_name, :add_to_list, :delete_from_list, :commit, :shopping_list_name,
     #   :category, :sub_category, :sub_category_group
     #   :set_change_qty_x (where x is a multi-digit number)
     # 
     # Session variables: :category, :sub_category, :sub_category_group, :customer_shopping_list_name, :customer_email
     # 
+    # *************************************************************************************************
+    # 100.01) Initialization
+    # *************************************************************************************************
     # Make sure all session variables have a value (nil if don't exist)
     session_vars = [:top_level, :category, :sub_category, :sub_category_group, 
       :customer_shopping_list_name, :customer_email,
@@ -18,6 +49,7 @@ class StoreController < ApplicationController
       if session[session_var].nil?
         session[session_var] = ""
       end
+      logger.debug "session[#{session_var}]=#{session[session_var]}"
     end
 
     # not sure why this is needed. It seems otherwise that the :notice is persisted longer than desired
@@ -41,10 +73,9 @@ class StoreController < ApplicationController
     @cur_cust_item = session[:cur_cust_item]
     index_render_method = ""
 
-    # ************************************************************
-    # Handle changes to the current customer or 
-    # current customer's shopping list.
-    # ************************************************************
+    # *************************************************************************************************
+    # 200.01) Handle changes to various controls on the store page
+    # *************************************************************************************************
     if not params[:set_customer_email].nil?
       logger.debug ":set_customer_email"
       # Changed current customer
@@ -352,6 +383,10 @@ class StoreController < ApplicationController
     end
 
     
+    # *************************************************************************************************
+    # 300.01) Build required data structures for view processingt
+    # *************************************************************************************************
+    
     # ************************************************************
     # Setup the customer list
     @customers = Customer.select(:email).order(:email)
@@ -522,7 +557,7 @@ class StoreController < ApplicationController
         
         csl_order_by = ""
         if session[:customer_shopping_list_order] == "*Category/Sub-category/Sub-category Group"
-          csl_order_by = "order by P.category, P.sub_category, P.sub_category_group, P.brand, P.descr"
+          csl_order_by = "order by P.category, P.sub_category, P.sub_category_group, P.brand, P.descr asc"
         elsif session[:customer_shopping_list_order] == "Price - Ascending"
           csl_order_by = "order by P.price asc"
         elsif session[:customer_shopping_list_order] == "Price - Descending"
@@ -532,9 +567,9 @@ class StoreController < ApplicationController
         elsif session[:customer_shopping_list_order] == "Ext Price - Descending"
           csl_order_by = "order by P.price * CSLI.quantity desc"
         elsif session[:customer_shopping_list_order] == "Brand/Description"
-          csl_order_by = "order by P.brand || P.descr"
+          csl_order_by = "order by P.brand || P.descr asc"
         elsif session[:customer_shopping_list_order] == "Description"
-          csl_order_by = "order by P.descr"
+          csl_order_by = "order by P.descr asc"
         else
           csl_order_by = ""
         end
@@ -549,6 +584,9 @@ class StoreController < ApplicationController
     end
     session[:cur_cust_item] = @cur_cust_item
     
+    # *************************************************************************************************
+    # 400.01) Response processing - based on value in index_render_method
+    # *************************************************************************************************
     # index_render_method = "index_cust_items"
     logger.debug "index_render_method=#{index_render_method}"
     respond_to do |format|
@@ -559,7 +597,10 @@ class StoreController < ApplicationController
       end
     end
 
+  # end of StoreController "index" method
+  # *************************************************************************************************
   end
+  # *************************************************************************************************
   
   private
   

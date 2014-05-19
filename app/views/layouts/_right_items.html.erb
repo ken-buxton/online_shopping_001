@@ -26,151 +26,157 @@
 		
 		<div id="cust_item_tbl", style="overflow: auto; border: 1px solid blue;">		<!-- height: 544px;  -->
 		<table>
-			<tr class="top_line">
-				<th style="width: 10px;"></th>
-				<th>Brand - Description</th>
-				<th class="right_justify">Min</th>
-				<th class="right_justify"></th>
-				<th></th>
-				<th class="center"></th>
-				<th class="right_justify">Ext</th>
-				<th></th>
-				<th></th>
-			</tr>
-			<tr class="top_line">
-				<th style="width: 10px;"></th>
-				<th>(Quantity)</th>
-				<th class="right_justify">Wgt</th>
-				<th class="right_justify">Price</th>
-				<th>Unit</th>
-				<th class="center">Qty</th>
-				<th class="right_justify">Price</th>
-				<th>Note</th>
-				<th></th>
-			</tr>
-		
-			<% item_count = 0 %>
-			<% package_count = 0.0 %>
-			<% total = 0.0 %>
-			<% current_category = '' %>
-			<% @customer_shopping_list_items.each do |item| %>
-				<% item_count += 1 %>
-				
-				<% if item['uofm'] == 'each' %>
-					<% package_count += item['quantity'].to_f %>
-				<% else %>
-					<% package_count += 1 %>
-				<% end %>
-				<% total += (item['price'].to_f * item['quantity'].to_f) %>
-				<% if current_category != item['category'] %>
-					<!-- <tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %>"> -->
-					<tr class="bold hdr_line">
-						<td class="bold hdr_line" style="width: 10px;">&nbsp;</td>
-						<td class="bold hdr_line"><%= item['category'] %></td>
-						<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-					</tr>
-					<% reset_cycle('items') %>
-					<% current_category = item['category'] %>
-				<% end %>
-				
-				<% cust_item_id = 'cust_item_' + item['product_id'].to_s %>
-				<tr id="<%= cust_item_id %>" class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %> line_hover">
-					
-					<% if @cur_cust_item == '#' + cust_item_id %>
-						<td style="width: 10px; background-color: #00ff00;">+</td>
-					<% else %>
-						<td style="width: 10px; background-color: PaleGoldenRod;">&nbsp;</td>
-					<% end %>
-				
-					<% this_item = item['brand'] %>
-					<% if item['brand'].size > 0 %>
-						<% this_item += " - " %>
-					<% end %>
-					<% this_item += sanitize(item['descr']) %> 
-					<% this_item += " (" + item['qty_desc'] + ")" %>
-					<% this_item_category = "#{item['category']}/#{item['sub_category']}/#{item['sub_category_group']}" %>
-					<% this_item_title = this_item + " - " + this_item_category %>
-					<td class="short_brand_descr" style="width: 300px;" title="<%= this_item_title %>">
-						<% if this_item.size > 40 %>
-							<%= this_item[0..39] + " ..." %>
-						<% else %>
-							<%= this_item %>
-						<% end %>
-						<% if @show_category_info %>
-							<br><%= this_item_category %>
-						<% end %>
-					</td>
-					
-					<% if item['min_qty_weight'].to_f <= 0.0 %>
-						<td class="right_justify"><%= "" %> </td>
-					<% else %>
-						<td class="right_justify"><%= number_with_precision(item['min_qty_weight'].to_f, precision: 2) %> </td>
-					<% end %>
-					
-					<td class="right_justify"><%= number_to_currency(item['price']) %></td>
-					<td><%= item['uofm'] %></td>
-											
-					<td class="right_justify">
-						<% set_change_qty_x = 'set_change_qty_' + item['product_id'].to_s %>
-						<%= form_tag store_path, remote: true, class: set_change_qty_x do %>
-							<span>
-								<% if item['uofm'] == 'each' %>
-								<%= number_field_tag set_change_qty_x, item['quantity'].to_f, step: 1.0,
-									class: "qty_update",
-									data: {remote: true, url: "/store/index" }
-									# onchange: 'this.form.submit()'
-								%>
-							<% else %>
-								<%= number_field_tag set_change_qty_x, 
-									number_with_precision(item['quantity'].to_f, precision: 1), step: 0.1,
-									class: "qty_update",
-									data: {remote: true, url: "/store/index" }
-									# onchange: 'this.form.submit()'
-								%>
-							<% end %>
-							<!-- <%= submit_tag "Change Qty", controller: "store", class: 'submit_only' %>
-							<%= javascript_tag "$('.#{set_change_qty_x} .submit_only').hide()" %> -->
-							</span>
-						<% end %>
-					</td>					
-					
-					<td class="right_justify"><%= number_to_currency(item['price'].to_f * item['quantity'].to_f) %></td>
-					
-					<td>
-						<% set_change_note_x = 'set_change_note_' + item['product_id'].to_s %>
-						<%= form_tag store_path, remote: true, class: set_change_note_x do %>
-							<span>
-							<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em",
-								data: {remote: true, url: "/store/index" }
-								# onchange: 'this.form.submit()'
-						 	%>
-							<!-- <%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
-							<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %> -->
-							</span>
-						<% end %>
-					</td>					
-					
-					<td style="width: 3em;">
-						<% del_conf_msg = "Are you sure you want to delete '#{this_item_title}' from your shopping list?" %>
-						<%= link_to "Delete", {controller: "store", delete_from_list: item['product_id']}, title: "Delete this line item?", 
-							data: {confirm: del_conf_msg}, method: :delete,
-							remote: true
-						%>
-					</td>
+			<thead>
+				<tr class="top_line">
+					<th style="width: 10px;"></th>
+					<th>Brand - Description</th>
+					<th class="right_justify">Min</th>
+					<th class="right_justify"></th>
+					<th></th>
+					<th class="center"></th>
+					<th class="right_justify">Ext</th>
+					<th></th>
+					<th></th>
 				</tr>
-			<% end %>	<!-- end @customer_shopping_list_items.each  -->
+				<tr class="top_line">
+					<th style="width: 10px;"></th>
+					<th>(Quantity)</th>
+					<th class="right_justify">Wgt</th>
+					<th class="right_justify">Price</th>
+					<th>Unit</th>
+					<th class="center">Qty</th>
+					<th class="right_justify">Price</th>
+					<th>Note</th>
+					<th></th>
+				</tr>
+			</thead>
+		
+			<tbody>
+				<% item_count = 0 %>
+				<% package_count = 0.0 %>
+				<% total = 0.0 %>
+				<% current_category = '' %>
+				<% @customer_shopping_list_items.each do |item| %>
+					<% item_count += 1 %>
+					
+					<% if item['uofm'] == 'each' %>
+						<% package_count += item['quantity'].to_f %>
+					<% else %>
+						<% package_count += 1 %>
+					<% end %>
+					<% total += (item['price'].to_f * item['quantity'].to_f) %>
+					<% if current_category != item['category'] %>
+						<!-- <tr class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %>"> -->
+						<tr class="bold hdr_line">
+							<td class="bold hdr_line" style="width: 10px;">&nbsp;</td>
+							<td class="bold hdr_line"><%= item['category'] %></td>
+							<td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+						</tr>
+						<% reset_cycle('items') %>
+						<% current_category = item['category'] %>
+					<% end %>
+					
+					<% cust_item_id = 'cust_item_' + item['product_id'].to_s %>
+					<tr id="<%= cust_item_id %>" class="<%= cycle('list_line_odd', 'list_line_even', name: 'items') %> line_hover">
+						
+						<% if @cur_cust_item == '#' + cust_item_id %>
+							<td style="width: 10px; background-color: #00ff00;">+</td>
+						<% else %>
+							<td style="width: 10px; background-color: PaleGoldenRod;">&nbsp;</td>
+						<% end %>
+					
+						<% this_item = item['brand'] %>
+						<% if item['brand'].size > 0 %>
+							<% this_item += " - " %>
+						<% end %>
+						<% this_item += sanitize(item['descr']) %> 
+						<% this_item += " (" + item['qty_desc'] + ")" %>
+						<% this_item_category = "#{item['category']}/#{item['sub_category']}/#{item['sub_category_group']}" %>
+						<% this_item_title = this_item + " - " + this_item_category %>
+						<td class="short_brand_descr" style="width: 300px;" title="<%= this_item_title %>">
+							<% if this_item.size > 40 %>
+								<%= this_item[0..39] + " ..." %>
+							<% else %>
+								<%= this_item %>
+							<% end %>
+							<% if @show_category_info %>
+								<br><%= this_item_category %>
+							<% end %>
+						</td>
+						
+						<% if item['min_qty_weight'].to_f <= 0.0 %>
+							<td class="right_justify"><%= "" %> </td>
+						<% else %>
+							<td class="right_justify"><%= number_with_precision(item['min_qty_weight'].to_f, precision: 2) %> </td>
+						<% end %>
+						
+						<td class="right_justify"><%= number_to_currency(item['price']) %></td>
+						<td><%= item['uofm'] %></td>
+												
+						<td class="right_justify">
+							<% set_change_qty_x = 'set_change_qty_' + item['product_id'].to_s %>
+							<%= form_tag store_path, remote: true, class: set_change_qty_x do %>
+								<span>
+									<% if item['uofm'] == 'each' %>
+									<%= number_field_tag set_change_qty_x, item['quantity'].to_f, step: 1.0,
+										class: "qty_update",
+										data: {remote: true, url: "/store/index" }
+										# onchange: 'this.form.submit()'
+									%>
+								<% else %>
+									<%= number_field_tag set_change_qty_x, 
+										number_with_precision(item['quantity'].to_f, precision: 1), step: 0.1,
+										class: "qty_update",
+										data: {remote: true, url: "/store/index" }
+										# onchange: 'this.form.submit()'
+									%>
+								<% end %>
+								<!-- <%= submit_tag "Change Qty", controller: "store", class: 'submit_only' %>
+								<%= javascript_tag "$('.#{set_change_qty_x} .submit_only').hide()" %> -->
+								</span>
+							<% end %>
+						</td>					
+						
+						<td class="right_justify"><%= number_to_currency(item['price'].to_f * item['quantity'].to_f) %></td>
+						
+						<td>
+							<% set_change_note_x = 'set_change_note_' + item['product_id'].to_s %>
+							<%= form_tag store_path, remote: true, class: set_change_note_x do %>
+								<span>
+								<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em",
+									data: {remote: true, url: "/store/index" }
+									# onchange: 'this.form.submit()'
+							 	%>
+								<!-- <%= submit_tag "Change Note", controller: "store", class: 'submit_only' %>
+								<%= javascript_tag "$('.#{set_change_note_x} .submit_only').hide()" %> -->
+								</span>
+							<% end %>
+						</td>					
+						
+						<td style="width: 3em;">
+							<% del_conf_msg = "Are you sure you want to delete '#{this_item_title}' from your shopping list?" %>
+							<%= link_to "Delete", {controller: "store", delete_from_list: item['product_id']}, title: "Delete this line item?", 
+								data: {confirm: del_conf_msg}, method: :delete,
+								remote: true
+							%>
+						</td>
+					</tr>
+				<% end %>	<!-- end @customer_shopping_list_items.each  -->
+			</tbody>
 			
-			<tr class="bottom_line">
-				<td style="width: 10px;"></td>
-				<td class="bold"><%= "Total Items: #{item_count},   Packages: #{package_count.to_i}" %></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td class="right_justify bold">Total</td>
-				<td class="right_justify bold"><%= number_to_currency(total) %></td>
-				<td></td>
-				<td></td>
-			</tr>				
+			<tfoot>
+				<tr class="bottom_line">
+					<td style="width: 10px;"></td>
+					<td class="bold"><%= "Total Items: #{item_count},   Packages: #{package_count.to_i}" %></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td class="right_justify bold">Total</td>
+					<td class="right_justify bold"><%= number_to_currency(total) %></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</tfoot>			
 		</table>
 		</div>		
 	<% end %>
