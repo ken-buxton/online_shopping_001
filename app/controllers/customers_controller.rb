@@ -1,6 +1,6 @@
 class CustomersController < ApplicationController
   before_action :set_customer, only: [:show, :edit, :update, :destroy]
-  skip_before_filter :authorize
+  skip_before_filter :authorize, only: [:new, :create]
 
   # GET /customers
   # GET /customers.json
@@ -22,6 +22,15 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
+    if session[:customer_id] and params[:id]
+      if session[:customer_id].to_s != params[:id].to_s
+        logger.debug "Attempt to edit other customer account (#{session[:customer_id]}, #{params[:id]})"
+        redirect_to login_url, notice: "You attempted to edit another customer account."
+      end
+    else
+      logger.debug "Invalid customer/password combination."
+      redirect_to login_url, notice: "Invalid customer/password combination."
+    end
   end
 
   # POST /customers
@@ -75,9 +84,10 @@ class CustomersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def customer_params
       params.require(:customer).permit(:id, :email, :password, :password_confirmation, 
+        :preferred_store_id,
         :first_name, :last_name, :nick_name, 
         :home_phone, :cell_phone, 
-        :address1, :city, :zip
+        :address1, :city, :state_id, :zip
       )
     end
 end

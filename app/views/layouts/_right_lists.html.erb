@@ -2,7 +2,7 @@
 	<fieldset style="border-width: 1px; background-color: PaleGoldenRod;"> 
 	<legend style="font-weight: bold">Your Shopping Lists</legend>
 
-	Customer:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= @customer_email %><br><br>
+	Customer:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><%= @customer_email %></strong><br><br>
 	<%= form_tag store_index_path, remote: true, class: 'customer_shopping_list' do %>
 		<%= label_tag 'set_customer_shopping_list_name', 'Customer Shopping Lists:' %>
 		<%= select_tag 'set_customer_shopping_list_name', 

@@ -140,6 +140,14 @@ input[type='button'], input[type='submit'], select {
   img {
     float: left;
   }
+  
+  .menu {
+    float: left;
+    margin-left: 20px;
+    font: medium bold;
+    color: $tm_banner_color;
+  }
+
 }
 
 #notice {
