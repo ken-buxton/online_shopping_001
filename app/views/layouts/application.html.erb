@@ -8,16 +8,22 @@
 </head>
 <body>
 	<%= render 'layouts/banner' %>
+	<%= %>
+	<%= link_to 'Logout', '/logout', method: :delete %>
 
-	<div id="columns">
-		<table><tr>
-			<br>
-			<%= render 'layouts/left' %>
-			
-			<%= render 'layouts/main' %>
-			
-			<%= render 'layouts/right' %>
-		</tr></table>
-	</div>
+	<% if @store == true %>
+		<div id="columns">
+			<table><tr>
+				<br>
+				<%= render 'layouts/left' %>
+				
+				<%= render 'layouts/main' %>
+				
+				<%= render 'layouts/right' %>
+			</tr></table>
+		</div>
+	<% else %>
+		<%= yield %>
+	<% end %>
 </body>
 </html>

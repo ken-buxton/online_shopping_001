@@ -1,7 +1,16 @@
 OnlineShopping001::Application.routes.draw do
-  get "ken/list"
+  
+  controller :sessions do
+    get    'login'  => :new
+    post   'login'  => :create
+    delete 'logout' => :destroy
+  end
+  
+  resources :customers
+
   match "store/index", via: [:get, :post, :delete]
-  root to: 'store#index', as: 'store', via: [:get, :post]
+  #root to: 'store#index', as: 'store', via: [:get, :post]
+  root to: 'sessions#new', as: 'sessions', via: [:get, :post, :destroy]
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)

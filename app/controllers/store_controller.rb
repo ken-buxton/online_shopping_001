@@ -39,6 +39,7 @@ class StoreController < ApplicationController
     # 100.01) Initialization
     # *************************************************************************************************
     # Make sure all session variables have a value (nil if don't exist)
+    @store = true
     session_vars = [:top_level, :category, :sub_category, :sub_category_group, 
       :customer_shopping_list_name, :customer_email,
       :customer_shopping_list_order, 
@@ -389,13 +390,14 @@ class StoreController < ApplicationController
     
     # ************************************************************
     # Setup the customer list
-    @customers = Customer.select(:email).order(:email)
+    #@customers = Customer.select(:email).order(:email)
     @customer_email = ""
-    customer_id = nil
-    if not session[:customer_email].blank?
-      @customer_email = session[:customer_email]
-      customer_id = Customer.where(email: session[:customer_email]).first.id
-    end
+    customer_id = session[:customer_id]
+    @customer_email = Customer.where(id: customer_id).first.email
+    # if not session[:customer_email].blank?
+      # @customer_email = session[:customer_email]
+      # customer_id = Customer.where(email: session[:customer_email]).first.id
+    # end
     
     # ************************************************************
     # Setup the food features list

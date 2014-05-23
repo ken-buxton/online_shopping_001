@@ -15,12 +15,14 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+function shop_list_tbl_heigth_fix() { return 213;}
+function cust_item_tbl_heigth_fix() { return 374;}
 
 $(window).load(function() {
     var h = $(window).height();
     
-    $('#shop_list_tbl').css({'height': h - 203});
-    $('#cust_item_tbl').css({'height': h - 335});
+    $('#shop_list_tbl').css({'height': h - shop_list_tbl_heigth_fix()});
+    $('#cust_item_tbl').css({'height': h - cust_item_tbl_heigth_fix()});
 });
 
 $(window).resize(function() {

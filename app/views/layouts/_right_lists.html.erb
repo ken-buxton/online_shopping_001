@@ -2,8 +2,8 @@
 	<fieldset style="border-width: 1px; background-color: PaleGoldenRod;"> 
 	<legend style="font-weight: bold">Your Shopping Lists</legend>
 
-	
-	<%= form_tag store_path, remote: true, class: 'customer_shopping_list' do %>
+	Customer:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= @customer_email %><br><br>
+	<%= form_tag store_index_path, remote: true, class: 'customer_shopping_list' do %>
 		<%= label_tag 'set_customer_shopping_list_name', 'Customer Shopping Lists:' %>
 		<%= select_tag 'set_customer_shopping_list_name', 
 			options_for_select(@customer_shopping_lists, @cur_shopping_list),
@@ -17,7 +17,7 @@
 	<% end %>
 	<br>
 	
-	<%= form_tag store_path, remote: true, class: 'shopping_list_name' do %>
+	<%= form_tag store_index_path, remote: true, class: 'shopping_list_name' do %>
 		<%= label_tag 'shopping_list_name', 'Shopping List Name:'%>
 		<span style="margin-left: 10px;"></span>
 		<%= text_field_tag 'shopping_list_name', @cur_shopping_list, class: "shopping_list_text", 

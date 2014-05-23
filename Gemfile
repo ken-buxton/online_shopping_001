@@ -35,6 +35,10 @@ end
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'
 
+# To force load on 5/20/14 for screen scraping stuff.
+# gem 'crack'
+# gem 'rest-client'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -54,7 +58,7 @@ gem 'will_paginate', '~> 3.0.5'
 #gem 'will_paginate', '~> 3.0.3'
 
 # Use ActiveModel has_secure_password - this was for home made authentication
-#gem 'bcrypt-ruby', '~> 3.1.2'
+gem 'bcrypt-ruby', '~> 3.1.2'
 
 # Use unicorn as the app server
 # gem 'unicorn'

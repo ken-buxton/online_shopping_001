@@ -2,8 +2,8 @@ $('#cust_list').html("<%=j render "layouts/right_lists" %>");
 $('#cust_item').html("<%=j render "layouts/right_items" %>");
 
 var h = $(window).height();
-$('#shop_list_tbl').css({'height': h - 203});
-$('#cust_item_tbl').css({'height': h - 335});
+$('#shop_list_tbl').css({'height': h - shop_list_tbl_heigth_fix()});
+$('#cust_item_tbl').css({'height': h - cust_item_tbl_heigth_fix()});
 
 $('#left_notice').html("<%=j render "layouts/left_notice" %>");
 $('#notice').css({'background-color':'#000000'}).animate({'background-color':'#ffff00'}, 600);

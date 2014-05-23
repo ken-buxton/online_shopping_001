@@ -1,5 +1,5 @@
 	<div id="left_food_feature">
-	<%= form_tag store_path, remote: true, class: 'food_features' do %>
+	<%= form_tag store_index_path, remote: true, class: 'food_features' do %>
 		<%= label_tag 'set_food_feature', 'Food Features' %>
 		<%= select_tag 'set_food_feature', 
 			options_for_select(@food_features, @cur_food_feature),

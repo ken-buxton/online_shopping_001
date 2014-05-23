@@ -10,7 +10,7 @@
 
 	<% if not @customer_shopping_list_items.nil? %>
 	
-		<%= form_tag store_path, remote: true, class: 'customer_shopping_list_order' do %>
+		<%= form_tag store_index_path, remote: true, class: 'customer_shopping_list_order' do %>
 			<%= label_tag 'set_customer_shopping_list_order', 'Sort Order:'%>
 			<%= select_tag 'set_customer_shopping_list_order', 
 				options_for_select(@customer_shopping_list_orders, @cur_shopping_list_order),
@@ -115,7 +115,7 @@
 												
 						<td class="right_justify">
 							<% set_change_qty_x = 'set_change_qty_' + item['product_id'].to_s %>
-							<%= form_tag store_path, remote: true, class: set_change_qty_x do %>
+							<%= form_tag store_index_path, remote: true, class: set_change_qty_x do %>
 								<span>
 									<% if item['uofm'] == 'each' %>
 									<%= number_field_tag set_change_qty_x, item['quantity'].to_f, step: 1.0,
@@ -141,7 +141,7 @@
 						
 						<td>
 							<% set_change_note_x = 'set_change_note_' + item['product_id'].to_s %>
-							<%= form_tag store_path, remote: true, class: set_change_note_x do %>
+							<%= form_tag store_index_path, remote: true, class: set_change_note_x do %>
 								<span>
 								<%= text_field_tag set_change_note_x, item['note'], style: "width: 7em",
 									data: {remote: true, url: "/store/index" }
